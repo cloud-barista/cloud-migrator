@@ -1,3 +1,6 @@
 [submodule "cm-butterfly"]
 	path = cm-butterfly
 	url = https://github.com/cloud-barista/cm-butterfly
+[submodule "cm-mayfly"]
+	path = cm-mayfly
+	url = https://github.com/cloud-barista/cm-mayfly
