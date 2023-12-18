@@ -19,3 +19,6 @@
 [submodule "cm-honeybee"]
 	path = cm-honeybee
 	url = https://github.com/cloud-barista/cm-honeybee
+[submodule "cb-tumblebug"]
+	path = cb-tumblebug
+	url = https://github.com/cloud-barista/cb-tumblebug
