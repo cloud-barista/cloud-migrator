@@ -1,0 +1,27 @@
+[submodule "cm-butterfly"]
+	path = cm-butterfly
+	url = https://github.com/cloud-barista/cm-butterfly
+[submodule "cm-mayfly"]
+	path = cm-mayfly
+	url = https://github.com/cloud-barista/cm-mayfly
+[submodule "cm-cicada"]
+	path = cm-cicada
+	url = https://github.com/cloud-barista/cm-cicada
+[submodule "cm-damselfly"]
+	path = cm-damselfly
+	url = https://github.com/cloud-barista/cm-damselfly
+[submodule "cm-grasshopper"]
+	path = cm-grasshopper
+	url = https://github.com/cloud-barista/cm-grasshopper
+[submodule "cm-beetle"]
+	path = cm-beetle
+	url = https://github.com/cloud-barista/cm-beetle
+[submodule "cm-honeybee"]
+	path = cm-honeybee
+	url = https://github.com/cloud-barista/cm-honeybee
+[submodule "cb-tumblebug"]
+	path = cb-tumblebug
+	url = https://github.com/cloud-barista/cb-tumblebug
+[submodule "cb-spider"]
+	path = cb-spider
+	url = https://github.com/cloud-barista/cb-spider
