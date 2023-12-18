@@ -13,3 +13,6 @@
 [submodule "cm-grasshopper"]
 	path = cm-grasshopper
 	url = https://github.com/cloud-barista/cm-grasshopper
+[submodule "cm-beetle"]
+	path = cm-beetle
+	url = https://github.com/cloud-barista/cm-beetle
