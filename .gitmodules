@@ -7,3 +7,6 @@
 [submodule "cm-cicada"]
 	path = cm-cicada
 	url = https://github.com/cloud-barista/cm-cicada
+[submodule "cm-damselfly"]
+	path = cm-damselfly
+	url = https://github.com/cloud-barista/cm-damselfly
