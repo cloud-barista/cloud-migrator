@@ -4,3 +4,6 @@
 [submodule "cm-mayfly"]
 	path = cm-mayfly
 	url = https://github.com/cloud-barista/cm-mayfly
+[submodule "cm-cicada"]
+	path = cm-cicada
+	url = https://github.com/cloud-barista/cm-cicada
