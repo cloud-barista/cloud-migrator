@@ -91,6 +91,39 @@ If you have any questions or feedback about the Cloud-Migrator, please visit the
 
 Thanks to [the M-CMP Community](https://github.com/m-cmp) for providing this script 
 
+### Update submodules
+
+<details>
+  <summary>Click to see prerequisites</summary>
+
+  Prerequisite (before running the script): 
+  - All repositories must have a tag. 
+  - `submodules.md` must be updated and committed.
+
+  (Optional) Set your user.name and user.email
+  ```bash
+  # Set git global user email and name
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+  ```
+
+  (Optional) Update `submodules.md` and commit it
+  ```bash
+  # Open 
+  vim submodules.md
+
+  # Modify repository urls and save
+
+  # Commit the updates
+  git add .
+  git commit -m "Edit `submodules.md`
+  ```
+
+</details>
+
+
+Update all submodules:
+
 ```bash
 # Download the script quietly and save as update-submodules.sh
 wget -q -O update-submodules.sh https://raw.githubusercontent.com/m-cmp/m-cmp/main/update-submodules.sh 
@@ -101,4 +134,3 @@ chmod 775 update-submodules.sh
 # Execute the script
 ./update-submodules.sh
 ```
-
