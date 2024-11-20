@@ -672,13 +672,13 @@ sequenceDiagram
     participant Spider as "Spider"
 	
 
-    User->>Browser: Select Source Group and Access to View Recommend infra model List
+    User->>Browser: Access to a view of the Recommended List (a list of servers)
     activate Browser
-    Browser->>Butterfly: Request Recommend infra model List with selected source model spec and image
+    Browser->>Butterfly: Request the Recommended Infra Model (a list of servers) with selected source model spec and image
     activate Butterfly
 	
     %% Retrieve the recommendation models list from Beetle
-	Butterfly->>Beetle: API call to GET /beetle/recommendation/mci
+	Butterfly->>Beetle: API call to POST /beetle/recommendation/mci
 	activate Beetle
 	Beetle-->>Butterfly: Return the recommendation infra model based on selected source model spec and image
 	deactivate Beetle
@@ -687,7 +687,7 @@ sequenceDiagram
     %% Retrieve estimate cost infromations from Ant
 	loop For each recommendation infra model
 		activate Ant
-        Butterfly->>Ant: API call to POST /ant/api/v1/cost/estimate api
+        Butterfly->>Ant: API call to POST /ant/api/v1/cost/estimate
         
         alt If Ant db does not have requested spec
             Ant->>Spider: API call to POST /spider/priceinfo/{ProductFamily}/{RegionName}
