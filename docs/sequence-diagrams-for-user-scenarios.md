@@ -677,13 +677,14 @@ sequenceDiagram
     Browser->>Butterfly: Request Recommend infra model List with selected source model spec and image
     activate Butterfly
 	
-
+    %% Retrieve the recommendation models list from Beetle
 	Butterfly->>Beetle: API call to GET /beetle/recommendation/mci
 	activate Beetle
 	Beetle-->>Butterfly: Return the recommendation infra model based on selected source model spec and image
 	deactivate Beetle
 
 
+    %% Retrieve estimate cost infromations from Ant
 	loop For each recommendation infra model
 		activate Ant
         Butterfly->>Ant: API call to POST /ant/api/v1/cost/estimate api
