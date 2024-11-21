@@ -657,12 +657,9 @@ sequenceDiagram
 ```
 
 
-## Estimate price for the migrated cloud infrastructure
+## Estimate cost for the recommend infra based on selected source model
 
-: Participants: Butterfly, Ant, Beetle, 
-
-> [!IMPORTANT] 
-> Question) Price 정보는 사전에 Spider에서 조회 후 관리하는 것으로 이해하고 있어 아래 다이어그램에 반영하지 않았습니다. 가격 추청에 대한 API가 맞는지 확인 바랍니다.
+: Participants: Butterfly, Beetle, Ant, Spider
 
 
 ```mermaid
@@ -670,40 +667,41 @@ sequenceDiagram
     participant User as "User"
     participant Browser as "Web Console"
     participant Butterfly as "Butterfly"
-    participant Tumblebug as "Tumblebug"
-    participant Damselfly as "Damselfly"
+    participant Beetle as "Beetle"
     participant Ant as "Ant"
+    participant Spider as "Spider"
 	
-	%% Step 0: User accesses Migration Status and Progress Management View
-    User->>Browser: Access the Migration Status and Progress Management view
+
+    User->>Browser: Access to a view of the Recommended List (a list of servers)
     activate Browser
-    Browser->>Butterfly: Request the Migration Status and Progress Management view
+    Browser->>Butterfly: Request the Recommended Infra Model (a list of servers) with selected source model spec and image
     activate Butterfly
 	
-	%% Retrieve the target model list from Damselfly	
-	Butterfly->>Damselfly: API call to GET /damselfly/cloudmodel
-	activate Damselfly
-	Damselfly-->>Butterfly: Return the target model (cloud model) list
-	deactivate Damselfly
-		
-	%% Get the migrated infra info in case the mci info is used 
-	opt Retrieve the migrated infra (mci) list from Tumblebug
-	    Butterfly->>Tumblebug: API call to GET /tumblebug/ns/{nsId}/mci
-	    activate Tumblebug
-	    Tumblebug-->>Butterfly: Return the migrated infra (mci) list
-	    deactivate Tumblebug
-	end
+    %% Retrieve the recommendation models list from Beetle
+	Butterfly->>Beetle: API call to POST /beetle/recommendation/mci
+	activate Beetle
+	Beetle-->>Butterfly: Return the recommendation infra model based on selected source model spec and image
+	deactivate Beetle
 
-	%% Estimate/retrieve price info of all target models
-	loop For each target model
-	    Butterfly->>Ant: API call to GET /ant/api/v1/price/info
+
+    %% Retrieve estimate cost infromations from Ant
+	loop For each recommendation infra model
 		activate Ant
-		Ant-->>Butterfly: Return pricing information
+        Butterfly->>Ant: API call to POST /ant/api/v1/cost/estimate
+        
+        alt If Ant db does not have requested spec
+            Ant->>Spider: API call to POST /spider/priceinfo/{ProductFamily}/{RegionName}
+            Spider-->>Ant: Return price info response
+        else If Ant db has requested spec
+            Ant ->> Ant: Query price info for spec and save in DB
+        end    
+		Ant-->>Butterfly: Return cost estimate response
 		deactivate Ant
 	end
-	Butterfly-->>Browser: Respond with the target model with pricing information
+
+	Butterfly-->>Browser: Respond with the target model with estimate cost information
     deactivate Butterfly
-    Browser-->>User: Display the target model with pricing information
+    Browser-->>User: Display the recommended infra model with estimate cost informantion
     deactivate Browser
 
 ```
