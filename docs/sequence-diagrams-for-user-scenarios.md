@@ -1,4 +1,3 @@
-
 # Computing infra migration scenarios
 
 The sequence diagrams represent user scenarios for computing infra migration.
@@ -10,7 +9,6 @@ The sequence diagrams represent user scenarios for computing infra migration.
 > [!TIP]
 > 수정, 보완이 필요한 사항들에 대해 많은 의견을 부탁드립니다.
 > 제안) 수정/보완 사항을 PR로 오픈하고 논의하면 좋을 것 같습니다. 🙌
-
 
 ## Login
 
@@ -42,15 +40,14 @@ sequenceDiagram
     deactivate Browser
 ```
 
-
-## Register the source computing environment 
+## Register the source computing environment
 
 : Participants: Butterfly, Honeybee, Source computing environment
 
 : Computing environment includes computing infrastructure, software, data
 : Currently, we're concentrating on the compuing infrasturcture.
 
-> [!IMPORTANT] 
+> [!IMPORTANT]
 > Question) Honeybee README에서 한번에 하나의 서버에 대한 Connection Info를 등록하는 예시를 확인할 수 있습니다. 한번에 여러 서버들의 Connection Info를 등록할 수 있는 방법이 있는지요?
 
 ```mermaid
@@ -105,13 +102,12 @@ sequenceDiagram
 
 ```
 
-
 ## Extract information from the source computing environment
 
 : Participants: Butterfly, Honeybee, Source computing environment
 
-> [!IMPORTANT] 
-> Question) `GET /honeybee/source_group/{sgID}/import/infra`에서 import 용어 변경/개선이 필요해 보여 의견을 남겨놓습니다. 
+> [!IMPORTANT]
+> Question) `GET /honeybee/source_group/{sgID}/import/infra`에서 import 용어 변경/개선이 필요해 보여 의견을 남겨놓습니다.
 
 ```mermaid
 sequenceDiagram
@@ -151,7 +147,6 @@ sequenceDiagram
 
 ```
 
-
 ## Retrieve the information of source computing environment (raw data, shape information)
 
 : Participants: Butterfly, Honeybee
@@ -172,7 +167,7 @@ sequenceDiagram
     deactivate Butterfly
     WebConsole-->>User: Display Source Environment Management Interface
     deactivate WebConsole
-    
+
     %% Step 1: Get Saved Source Info
     User->>WebConsole: Retrieve saved source information
     activate WebConsole
@@ -188,7 +183,6 @@ sequenceDiagram
     deactivate WebConsole
 
 ```
-
 
 ## Retrieve the information of source computing environment (refined data, onpremise model)
 
@@ -211,7 +205,7 @@ sequenceDiagram
     deactivate Butterfly
     Browser-->>User: Display Source Environment Management Interface
     deactivate Browser
-    
+
     %% Step 1: Get Saved Source Info
     User->>Browser: Retrieve saved source information
     activate Browser
@@ -244,7 +238,6 @@ sequenceDiagram
 
 ```
 
-
 ## Register or modify user's source model
 
 : Participants: Butterfly, Damselfly, Honeybee
@@ -259,7 +252,7 @@ sequenceDiagram
     participant Butterfly as "Butterfly"
     participant Damselfly as "Damselfly"
     participant Honeybee as "Honeybee"
-	
+
 	%% Step 0: User accesses Migration Model Management View
     User->>Browser: Access the Migration Model Management view
     activate Browser
@@ -270,14 +263,14 @@ sequenceDiagram
         activate Honeybee
         Honeybee-->>Butterfly: Return the onpremise infra model (refined data)
         deactivate Honeybee
-    end    
+    end
     opt Retrieve the source models (onpremise model) from Damselfly
         Butterfly->>Damselfly: API call to GET /damselfly/onpremmodel
         activate Damselfly
         Damselfly-->>Butterfly: Return the onpremise model list
         deactivate Damselfly
     end
-    opt Retrieve the target models (cloud model) from Damselfly        
+    opt Retrieve the target models (cloud model) from Damselfly
         Butterfly->>Damselfly: API call to GET /damselfly/cloudmodel
         activate Damselfly
         Damselfly-->>Butterfly: Return the cloud model list
@@ -319,7 +312,6 @@ sequenceDiagram
 
 ```
 
-
 ## Recommend the target computing infrastructure
 
 : Participants: Butterfly, Damselfly, Beetle, Tumblebug
@@ -332,20 +324,16 @@ sequenceDiagram
     participant Damselfly as "Damselfly"
     participant Beetle as "Beetle"
     participant Tumblebug as "Tumblebug"
-	
+
 	%% Step 0: User accesses Migration Model Management View
     User->>Browser: Access the Migration Model Management view
     activate Browser
     Browser->>Butterfly: Request the Migration Model Management view
-    activate Butterfly  
-    opt Retrieve the source and target models from Damselfly
+    activate Butterfly
+    opt Retrieve the source models from Damselfly
         Butterfly->>Damselfly: API call GET /damselfly/onpremmodel
         activate Damselfly
         Damselfly-->>Butterfly: Return the onpremise model list
-        deactivate Damselfly
-        Butterfly->>Damselfly: API call GET /damselfly/cloudmodel
-        activate Damselfly
-        Damselfly-->>Butterfly: Return the cloud model list
         deactivate Damselfly
     end
 
@@ -365,11 +353,11 @@ sequenceDiagram
 
     %% Recommend target cloud infrastructure
     User->>Browser: Select a source model, provier, and region
-    activate Browser    
+    activate Browser
     Browser->>Butterfly: Request to recommend target infrastructure
     activate Butterfly
     Butterfly->>Beetle: API call POST /beetle/recommendation/mci
-    activate Beetle     
+    activate Beetle
     Beetle->>Tumblebug: API call POST /tumblebug/mciRecommendVm
     activate Tumblebug
     Tumblebug-->>Beetle: Return the recommended VM spec list based on filtering and prioritizing
@@ -381,7 +369,7 @@ sequenceDiagram
     Beetle->>Beetle: Evaluate the infra similarity between source and target
     Beetle-->>Butterfly: Return the recommended target infrastructure as a target model
     deactivate Beetle
-     
+
     %% Optional Step: Save the original target model (cloud model)
     opt Save the original target model (cloud model)
         User->>Browser: Save original cloudmodel
@@ -401,7 +389,6 @@ sequenceDiagram
 
 ```
 
-
 ## Register or modify user's target model
 
 : Participants: Butterfly, Damselfly
@@ -412,7 +399,7 @@ sequenceDiagram
     participant Browser as "Web Console"
     participant Butterfly as "Butterfly"
     participant Damselfly as "Damselfly"
-	
+
 	%% Step 0: User accesses Migration Model Management View
     User->>Browser: Access the Migration Model Management view
     activate Browser
@@ -424,12 +411,12 @@ sequenceDiagram
         Damselfly-->>Butterfly: Return the onpremise model list
         deactivate Damselfly
     end
-    opt Retrieve the target models (cloud model) from Damselfly        
+    opt Retrieve the target models (cloud model) from Damselfly
         Butterfly->>Damselfly: API call to GET /damselfly/cloudmodel
         activate Damselfly
         Damselfly-->>Butterfly: Return the cloud model list
         deactivate Damselfly
-    end		
+    end
     Butterfly-->>Browser: Respond with the view
     deactivate Butterfly
     Browser-->>User: Display Migration Model Management Interface
@@ -466,7 +453,6 @@ sequenceDiagram
 
 ```
 
-
 ## Migrate to cloud infrastructure
 
 : Participants: Butterfly, Damselfly, Beetle, Tumblebug
@@ -479,18 +465,18 @@ sequenceDiagram
     participant Damselfly as "Damselfly"
     participant Beetle as "Beetle"
     participant Tumblebug as "Tumblebug"
-	
+
 	%% Step 0: User accesses Migration Model Management View
     User->>Browser: Access the Migration Model Management view
     activate Browser
     Browser->>Butterfly: Request the Migration Model Management view
     activate Butterfly
-    opt Retrieve the target models (cloud model) from Damselfly        
+    opt Retrieve the target models (cloud model) from Damselfly
         Butterfly->>Damselfly: API call to GET /damselfly/cloudmodel
         activate Damselfly
         Damselfly-->>Butterfly: Return the cloud model list
         deactivate Damselfly
-    end		
+    end
     Butterfly-->>Browser: Respond with the view
     deactivate Butterfly
     Browser-->>User: Display Migration Model Management Interface
@@ -517,12 +503,24 @@ sequenceDiagram
 
 ```
 
-## Load computing infra migration workflow template and make/create a workflow 
+## Load computing infra migration workflow template and make/create a workflow
 
-: Participants: Butterfly, Damselfly, Cicada, Beetle
+: Participants: Butterfly, Damselfly, Cicada
 
-> [!IMPORTANT] 
-> Question) 사용자가 지정한 Workflow에 연관되는 task_component를 어떻게 구분할 수 있을까요?
+> [!NOTE]
+>
+> - 다음은 몇 차례 논의 과정을 거치면서 점차 상세한 부분들이 표현된 시퀀스 다이어그램입니다.
+> - 상세함의 정도는 논의 내용에 따라 적절히 반영해주시기 바랍니다.
+>   - 참고 - 지나치게 상세하게 작성하는 것은 지양하고자 합니다 ^^;;
+
+> [!NOTE]
+>
+> - (참고) 다음은 Butterfly의 Frontend와 Backend 간에 세부 호출 관계를 나타내고 있습니다.
+> - (참고) 이는 다음과 같이 포괄적으로 나타낼 수 있습니다.
+>   - --> Web Console에서 Butterfly에 Workflow Tool view 요청
+>   - --> Butterfly에서 Cicada의 Workflow template 조회 API 호출
+>   - --> Butterfly에서 Cicada의 Task components API 호출
+>   - --> Butterfly에서 Web Console로 Workflow Tool view 응답
 
 ```mermaid
 sequenceDiagram
@@ -531,57 +529,62 @@ sequenceDiagram
     participant Butterfly as "Butterfly"
     participant Cicada as "Cicada"
     participant Damselfly as "Damselfly"
-	
-	%% Step 0: User accesses Cloud Migration Workflow Management View
+
+	%% [Steps for loading view]
+	%% User accesses a view of Cloud Migration Workflow Management
     User->>Browser: Access the Cloud Migration Workflow Management view
     activate Browser
     Browser->>Butterfly: Request the Cloud Migration Workflow Management view
     activate Butterfly
-    opt Retrieve the workflow (template) list from Cicada
-	    Butterfly->>Cicada: API call to GET /cicada/workflow_template
-	    activate Cicada
-	    Cicada-->>Butterfly: Return the workflow (template list)
-	    deactivate Cicada
-	end		
+	%% Retrieve the target models (cloud model) from Damselfly
+	Butterfly->>Damselfly: API call to GET /damselfly/cloudmodel
+	activate Damselfly
+	Damselfly-->>Butterfly: Return the cloud model list
+	deactivate Damselfly
     Butterfly-->>Browser: Respond with the view
-    deactivate Butterfly
-    Browser-->>User: Display Migration Model Management Interface
-    deactivate Browser
-
-    %% Select a workflow (template)
-    User->>Browser: Select a workflow (template)
-    activate Browser
-
-    %% Load the workflow (template)
-    User->>Browser: Load the workflow (template)
-    Browser->>Butterfly: Request to load the workflow (template)
-    activate Butterfly
-    Butterfly->>Cicada: API call to GET /cicada/workflow_template/{wftId}
-	activate Cicada
-	Cicada-->>Butterfly: Return the workflow (template)
-	deactivate Cicada    
-	opt Retrieve the task component list from Cicada
-	    Butterfly->>Cicada: API call to GET /cicada/task_component
-	    activate Cicada
-	    Cicada-->>Butterfly: Return the task component list
-	    deactivate Cicada
-	end
-    opt Retrieve the target models (cloud model) from Damselfly        
-        Butterfly->>Damselfly: API call to GET /damselfly/cloudmodel
-        activate Damselfly
-        Damselfly-->>Butterfly: Return the cloud model list
-        deactivate Damselfly
-    end
-    Butterfly-->>Browser: Respond with the Cloud Migration Workflow Management view
     deactivate Butterfly
     Browser-->>User: Display the Cloud Migration Workflow Management view
     deactivate Browser
 
-    %% Make/create a workflow
-    User->>Browser: Drag and drop task components
-    activate Browser
+	%% [Steps for processing user scenarios]
+    %% Select a target model
     User->>Browser: Select a target model
-    User->>Browser: Fill in the form
+	activate Browser
+    %% Press "View Workflow Tool" and load the workflow (template)
+    User->>Browser: press the hyperlink, View Worfklow Tool
+
+	%% Access the Workflow Tool base/background view
+    Browser->>Butterfly: Request to load the Workflow Tool view
+    activate Butterfly
+    Butterfly-->Browser: Respond with the Workflow Tool base/background view
+    Browser->>Browser: Display the Workflow Tool base/background view
+
+    %% (On frontend, it's processed synchronously) Load a workflow (template) view
+    Browser->Butterfly: Request to retrieve a workflow (template)
+    Butterfly->>Cicada: API call to GET /cicada/workflow_template/{wftId}
+	activate Cicada
+	Cicada-->>Butterfly: Return the workflow (template)
+	deactivate Cicada
+    Butterfly-->>Browser: Respond with the workflow (template)
+    Browser->>Browser: Display the workflow (template)
+
+	%% (On frontend, it's processed synchronously) Load a list of task components view
+    Browser->Butterfly: Request to retrieve a list of task components
+	Butterfly->>Cicada: API call to GET /cicada/task_component
+	activate Cicada
+	Cicada-->>Butterfly: Return the list of task components
+	deactivate Cicada
+	Butterfly-->>Browser: Respond with the list of task components
+	Deactivate Butterfly
+    Browser->>Browser: On the sidebar, display the list of task components
+    Deactivate Browser
+
+    %% Make/create a workflow
+    opt (TBD) Modify the workflow (template)
+	    User->>Browser: Drag and drop task components
+	    activate Browser
+	    User->>Browser: Fill in the form
+	end
     User->>Browser: Create the workflow
     Browser->>Butterfly: Request to crate the workflow
     activate Butterfly
@@ -591,14 +594,13 @@ sequenceDiagram
     deactivate Cicada
     Butterfly-->>Browser: Respond with the workflow creation confirmation
     deactivate Butterfly
-    Browser->>User: Display the confirmation    
+    Browser->>User: Display the confirmation
 
 ```
 
+## Run a workflow
 
-## Run a workflow 
-
-: Participants: Butterfly, Cicada, Damselfly
+: Participants: Butterfly, Cicada
 
 ```mermaid
 sequenceDiagram
@@ -606,7 +608,7 @@ sequenceDiagram
     participant Browser as "Web Console"
     participant Butterfly as "Butterfly"
     participant Cicada as "Cicada"
-	
+
 	%% Step 0: User accesses Cloud Migration Workflow Management View
     User->>Browser: Access the Cloud Migration Workflow Management view
     activate Browser
@@ -617,7 +619,7 @@ sequenceDiagram
 	    activate Cicada
 	    Cicada-->>Butterfly: Return the workflow
 	    deactivate Cicada
-	end		
+	end
     Butterfly-->>Browser: Respond with the view
     deactivate Butterfly
     Browser-->>User: Display Migration Model Management Interface
@@ -639,28 +641,25 @@ sequenceDiagram
     deactivate Browser
 
 
-    %% Get status of the workflow
-    User->>Browser: Select a workflow
-    activate Browser
-    User->>Browser: Get status of the workflow
-    Browser->>Butterfly: Request to get status of the workflow 
-    activate Butterfly
-	Butterfly->>Cicada: API call to GET /cicada/workflow/{wfId}/runs
-	activate Cicada
-	Cicada-->>Butterfly: Return task logs in the worfklow
-	deactivate Cicada
-	Butterfly-->>Browser: Respond with the task logs 
-    deactivate Butterfly
-    Browser-->>User: Display the task logs
-    deactivate Browser
-
+	%% %% Get status of the workflow
+    %% User->>Browser: Select a workflow
+    %% activate Browser
+    %% User->>Browser: Get status of the workflow
+    %% Browser->>Butterfly: Request to get status of the workflow
+    %% activate Butterfly
+	%% Butterfly->>Cicada: API call to GET /cicada/workflow/{wfId}/runs
+	%% activate Cicada
+	%% Cicada-->>Butterfly: Return task logs in the worfklow
+	%% deactivate Cicada
+	%% Butterfly-->>Browser: Respond with the task logs
+    %% deactivate Butterfly
+    %% Browser-->>User: Display the task logs
+    %% deactivate Browser
 ```
-
 
 ## Estimate cost for the recommend infra based on selected source model
 
 : Participants: Butterfly, Beetle, Ant, Spider
-
 
 ```mermaid
 sequenceDiagram
@@ -670,13 +669,13 @@ sequenceDiagram
     participant Beetle as "Beetle"
     participant Ant as "Ant"
     participant Spider as "Spider"
-	
+
 
     User->>Browser: Access to a view of the Recommended List (a list of servers)
     activate Browser
     Browser->>Butterfly: Request the Recommended Infra Model (a list of servers) with selected source model spec and image
     activate Butterfly
-	
+
     %% Retrieve the recommendation models list from Beetle
 	Butterfly->>Beetle: API call to POST /beetle/recommendation/mci
 	activate Beetle
@@ -688,13 +687,13 @@ sequenceDiagram
 	loop For each recommendation infra model
 		activate Ant
         Butterfly->>Ant: API call to POST /ant/api/v1/cost/estimate
-        
+
         alt If Ant db does not have requested spec
             Ant->>Spider: API call to POST /spider/priceinfo/{ProductFamily}/{RegionName}
             Spider-->>Ant: Return price info response
         else If Ant db has requested spec
             Ant ->> Ant: Query price info for spec and save in DB
-        end    
+        end
 		Ant-->>Butterfly: Return cost estimate response
 		deactivate Ant
 	end
@@ -706,6 +705,4 @@ sequenceDiagram
 
 ```
 
-
 # Software infra migration (TBD)
-
