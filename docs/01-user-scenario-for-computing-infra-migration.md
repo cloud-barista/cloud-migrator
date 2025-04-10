@@ -3,7 +3,7 @@
 The sequence diagrams represent user scenarios for computing infra migration.
 
 > [!NOTE]
-> 원활한 Cloud-Migrator v0.3.0 통합 및 릴리스를 위해 Sequence Diagram을 작성하였습니다.
+> 원활한 Cloud-Migrator v0.3.0 통합 및 릴리스를 위한 Sequence Diagram 입니다.
 > 그 동안 협의된 사항과 사용자 시나리오를 바탕으로 작성되었습니다.
 
 > [!TIP]
@@ -704,5 +704,3 @@ sequenceDiagram
     deactivate Browser
 
 ```
-
-# Software infra migration (TBD)
