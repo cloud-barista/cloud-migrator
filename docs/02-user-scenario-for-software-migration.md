@@ -52,40 +52,347 @@ sequenceDiagram
     deactivate Browser
 ```
 
-## User scenarios
+## Register the source computing environment and extract software information
 
 > [!NOTE]
-> 현재 도출된 사용자 시나리오 초안 입니다.
-> 향후, 각 시나리오 별로 Sequence Diagram을 작성할 예정 입니다.
-> 참고 - [Computing Infrastructure Migration Scenario](./01-user-scenario-for-computing-infra-migration.md)
+> ✅ This section is UPDATED.
 
-(소스 컴퓨팅 환경에서 SW 형상 정보(Raw data) 또는 소스 SW 모델(Refined) 추출)
+: Participants: Butterfly, Honeybee, Source computing environment
 
-1. (사용자가) CM portal 에서 소스 그룹 및 연결 정보 등록 요청 :arrow_right: (Honeybee API 호출됨) Honeybee가 대상 Server들에 Agent를 설치함 (비동기)
-2. (사용자가) CM portal 에서 소스 컴퓨팅 환경의 SW 분석 및 추출 요청 :arrow_right: (Honeybee API 호출됨) Honeybee가 SW 형상 정보 / 소스 SW 모델을 제공함
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant WebConsole as Web Console
+    participant Butterfly as Butterfly
+    participant Honeybee as Honeybee
+    participant SrcEnv as Source Computing Environment
 
-(소스/목표 SW 사용자 모델 운영 및 관리)
+    %% Step 0: User accesses Source Computing Environment Management View
+    User->>WebConsole: Access the view of Source Computing Environment Management
+    activate WebConsole
+    WebConsole->>Butterfly: Request the Source Computing Environment Management view
+    activate Butterfly
+    Butterfly-->>WebConsole: Respond with the view
+    deactivate Butterfly
+    WebConsole-->>User: Display Source Environment Management Interface
+    deactivate WebConsole
 
-3. (사용자가) CM portal 에서 소스 SW 모델을 소스 SW 사용자 모델로서 저장 요청 :arrow_right: (Damselfly API 호출됨) Damselfly가 소스 SW 사용자 모델을 저장 및 관리함
-4. (사용자가) CM portal 에서 소스 SW 사용자 모델을 확인 및 수정하여, 목표 SW 사용자 모델로 저장을 요청 :arrow_right: (Damselfly API 호출됨) Damselfly가 목표 SW 사용자 모델을 저장 및 관리함
+    %% Step 1: Register Source Group
+    User->>WebConsole: Register source group
+    activate WebConsole
+    WebConsole->>Butterfly: Send request to register source group
+    activate Butterfly
+    Butterfly->>Honeybee: API call to POST /honeybee/source_group
+    activate Honeybee
+    Honeybee-->>Butterfly: Return the source group ID (sgID)
+    deactivate Honeybee
+    Butterfly-->>WebConsole: Respond with Source Group Registration Confirmation (view/message)
+    deactivate Butterfly
+    WebConsole-->>User: Show source group registration confirmation
+    deactivate WebConsole
 
-(SW 마이그레이션 대상 패키지 등록)
+    %% Step 2: Register Connection Info
+    User->>WebConsole: Register connection info with sgID
+    activate WebConsole
+    WebConsole->>Butterfly: Send request to register connection info with sgID
+    activate Butterfly
+    Butterfly->>Honeybee: API call to POST /honeybee/source_group/{sgID}/connection_info
+    activate Honeybee
+    Honeybee->>SrcEnv: Install agent on the source servers
+    activate SrcEnv
+    SrcEnv-->>Honeybee: Return agent installation status
+    deactivate SrcEnv
+    Honeybee-->>Butterfly: Return the registered connection information
+    deactivate Honeybee
+    Butterfly-->>WebConsole: Respond with connection info and status (view/message)
+    deactivate Butterfly
+    WebConsole-->>User: Display connection registration and status
+    deactivate WebConsole
 
-5. (사용자가) CM portal 에서 목표 SW 사용자 모델을 SW 마이그레이션 대상 패키지로 등록 요청 :arrow_right: (Grasshopper API 호출됨) Grasshopper가 목표 SW 사용자 모델을 바탕으로 Ansible Playbook을 생성, 저장 및 관리함
+    %% Step 3: Extract Software Information
+    User->>WebConsole: Extract software information from source servers
+    activate WebConsole
+    WebConsole->>Butterfly: Send request to extract software information
+    activate Butterfly
+    Butterfly->>Honeybee: API call to GET /honeybee/source_group/{sgID}/import/software
+    activate Honeybee
+    Honeybee->>SrcEnv: Collect software packages, containers, and services
+    activate SrcEnv
+    SrcEnv-->>Honeybee: Return software information (packages, containers, etc.)
+    deactivate SrcEnv
+    Honeybee-->>Butterfly: Return the extracted software information
+    deactivate Honeybee
+    Butterfly-->>WebConsole: Respond with software extraction confirmation
+    deactivate Butterfly
+    WebConsole-->>User: Display software extraction status
+    deactivate WebConsole
+```
 
-(SW 마이그레이션 워크플로우 생성 및 실행)
+## Retrieve and refine software information from source environment
 
-6. (사용자가) CM portal 에서 SW 마이그레이션 Workflow template 조회 (사전 정의 필요) :arrow_right: (Cicada API 호출됨) Cicada에서 SW 마이그레이션 Workflow template 제공
-7. (사용자가) CM portal 에서 SW 마이그레이션 Workflow 수정 후, 생성 요청 :arrow_right: (Cicada API 호출됨) Cicada에서 입력된 SW 마이그레이션 Workflow 생성/저장 및 관리
-   (사용자가) CM portal 에서 SW 마이그레이션 Workflow 실행 요청 :arrow_right: (Cicada API 호출됨) SW 마이그레이션 Workflow 실행 :arrow_right: (Grasshopper API 호출됨) SW 마이그레이션 실행 :arrow_right: (Tumblebug API 호출됨) 대상 VM 접속 정보 조회 :arrow_right: (Grasshopper에서) 기 정의된 Playbook을 바탕으로 SW 마이그레이션 실행 :arrow_right: (Grasshopper에서) SW 구동에 필요한 파일/정보/데이터를 전송/복사/주입
-8. (사용자가) CM portal 에서 SW 마이그레이션 Workflow 실행 결과 조회 :arrow_right: (Cicada API 호출됨) SW 마이그레이션 Workflow 실행 결과 제공
+> [!NOTE]
+> ✅ This section is UPDATED.
 
-(마이그레이션된 SW 구동 상태 확인)
+: Participants: Butterfly, Honeybee, Damselfly
 
-9. (사용자가) CM portal 에서 마이그레이션된 SW 구동 상태 확인 요청 :arrow_right: (Grasshopper API 호출됨) 소프트웨어 구동 상태 제공
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Browser as Web Console
+    participant Butterfly as Butterfly
+    participant Honeybee as Honeybee
+    participant Damselfly as Damselfly
 
----
+    %% Step 0: User accesses Software Migration Management View
+    User->>Browser: Access the Software Migration Management view
+    activate Browser
+    Browser->>Butterfly: Request the Software Migration Management view
+    activate Butterfly
+    Butterfly-->>Browser: Respond with the view
+    deactivate Butterfly
+    Browser-->>User: Display Software Migration Management Interface
+    deactivate Browser
 
-여기서 부터 Sequence Diagram 작성됨
+    %% Step 1: Get Raw Software Data
+    User->>Browser: Retrieve raw software data from source
+    activate Browser
+    Browser->>Butterfly: Request to retrieve raw software data
+    activate Butterfly
+    Butterfly->>Honeybee: API call to GET /honeybee/source_group/{sgID}/software
+    activate Honeybee
+    Honeybee-->>Butterfly: Return raw software data
+    deactivate Honeybee
+    Butterfly-->>Browser: Respond with raw software data
+    deactivate Butterfly
+    Browser-->>User: Display raw software data in JSON editor
+    deactivate Browser
 
-## TBD
+    %% Step 2: Get Refined Software Data
+    User->>Browser: Retrieve refined software data
+    activate Browser
+    Browser->>Butterfly: Request to retrieve refined software data
+    activate Butterfly
+    Butterfly->>Honeybee: API call to GET /honeybee/source_group/{sgID}/software/refined
+    activate Honeybee
+    Honeybee-->>Butterfly: Return refined software data (filtered and processed)
+    deactivate Honeybee
+    Butterfly-->>Browser: Respond with refined software data
+    deactivate Butterfly
+    Browser-->>User: Display refined software data in JSON editor
+    deactivate Browser
+
+    %% Optional Step: Save the source software model
+    opt Save the source software model
+        User->>Browser: Save source software model
+        activate Browser
+        Browser->>Butterfly: Request to save software model
+        activate Butterfly
+        Butterfly->>Damselfly: POST /damselfly/softwaremodel
+        activate Damselfly
+        Damselfly-->>Butterfly: Return the saved software model information
+        deactivate Damselfly
+        Butterfly-->>Browser: Respond with the save confirmation
+        deactivate Butterfly
+        Browser-->>User: Display the save confirmation
+        deactivate Browser
+    end
+```
+
+## Generate software migration list and plan
+
+> [!NOTE]
+> ✅ This section is UPDATED.
+
+: Participants: Butterfly, Grasshopper, Honeybee
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Browser as Web Console
+    participant Butterfly as Butterfly
+    participant Grasshopper as Grasshopper
+    participant Honeybee as Honeybee
+
+    %% Step 0: User accesses Software Migration Management View
+    User->>Browser: Access the Software Migration Management view
+    activate Browser
+    Browser->>Butterfly: Request the Software Migration Management view
+    activate Butterfly
+    opt Retrieve refined software data from Honeybee
+        Butterfly->>Honeybee: API call to GET /honeybee/source_group/{sgID}/software/refined
+        activate Honeybee
+        Honeybee-->>Butterfly: Return refined software data
+        deactivate Honeybee
+    end
+    Butterfly-->>Browser: Respond with the view
+    deactivate Butterfly
+    Browser-->>User: Display Software Migration Management Interface
+    deactivate Browser
+
+    %% Step 1: Generate Migration List
+    User->>Browser: Generate software migration list
+    activate Browser
+    Browser->>Butterfly: Request to generate migration list
+    activate Butterfly
+    Butterfly->>Grasshopper: API call to POST /grasshopper/software/package/migration_list
+    activate Grasshopper
+    Note over Grasshopper: Filter out system packages:<br/>- Library packages (lib.*-dev)<br/>- Container runtimes (docker.*)<br/>- Kernel packages (linux-generic.*)<br/>- Package managers (apt, yum, dnf)
+    Grasshopper->>Honeybee: Validate connection info
+    activate Honeybee
+    Honeybee-->>Grasshopper: Return connection validation result
+    deactivate Honeybee
+    Grasshopper-->>Butterfly: Return filtered migration package list
+    deactivate Grasshopper
+    Butterfly-->>Browser: Respond with migration list
+    deactivate Butterfly
+    Browser-->>User: Display migration plan with filtered packages
+    deactivate Browser
+
+    %% Step 2: Review and Modify Migration List
+    opt Review and modify migration list
+        User->>Browser: Review and modify migration packages
+        activate Browser
+        Note over Browser: User can:<br/>- Remove unwanted packages<br/>- Modify package versions<br/>- Set custom configurations<br/>- Define data paths
+        Browser-->>User: Display modified migration plan
+        deactivate Browser
+    end
+```
+
+## Execute software migration
+
+> [!NOTE]
+> ✅ This section is UPDATED.
+
+: Participants: Butterfly, Grasshopper, Honeybee, Tumblebug
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Browser as Web Console
+    participant Butterfly as Butterfly
+    participant Grasshopper as Grasshopper
+    participant Honeybee as Honeybee
+    participant Tumblebug as Tumblebug
+    participant SourceVM as Source VM
+    participant TargetVM as Target VM
+
+    %% Step 0: User accesses Software Migration Execution View
+    User->>Browser: Access the Software Migration Execution view
+    activate Browser
+    Browser->>Butterfly: Request the Software Migration Execution view
+    activate Butterfly
+    Butterfly-->>Browser: Respond with the view and available target VMs
+    deactivate Butterfly
+    Browser-->>User: Display Migration Execution Interface
+    deactivate Browser
+
+    %% Step 1: Select Target and Execute Migration
+    User->>Browser: Select target VM and execute software migration
+    activate Browser
+    Browser->>Butterfly: Send migration execution request
+    activate Butterfly
+    Butterfly->>Grasshopper: API call to POST /grasshopper/software/package/migrate
+    activate Grasshopper
+    
+    %% Establish SSH connections
+    Grasshopper->>Honeybee: Get source connection info
+    activate Honeybee
+    Note over Honeybee: Decrypt connection credentials<br/>using RSA private key
+    Honeybee-->>Grasshopper: Return decrypted connection info
+    deactivate Honeybee
+    
+    Grasshopper->>Tumblebug: Get target VM connection info
+    activate Tumblebug
+    Tumblebug-->>Grasshopper: Return target VM access info
+    deactivate Tumblebug
+    
+    Grasshopper->>SourceVM: Establish SSH connection
+    activate SourceVM
+    Grasshopper->>TargetVM: Establish SSH connection  
+    activate TargetVM
+    
+    %% Execute migration for each software package
+    loop For each software package in migration list
+        Note over Grasshopper: Update status to "installing"
+        Grasshopper->>TargetVM: Run Ansible playbook for package installation
+        TargetVM-->>Grasshopper: Return installation result
+        
+        Grasshopper->>SourceVM: Copy configuration files and data
+        SourceVM-->>Grasshopper: Return copied files
+        Grasshopper->>TargetVM: Transfer configuration files
+        
+        Grasshopper->>SourceVM: Extract service configuration
+        SourceVM-->>Grasshopper: Return service settings
+        Grasshopper->>TargetVM: Configure and start services
+        TargetVM-->>Grasshopper: Return service status
+        
+        Note over Grasshopper: Update status to "finished" or "failed"
+    end
+    
+    deactivate SourceVM
+    deactivate TargetVM
+    
+    Grasshopper-->>Butterfly: Return migration execution ID and status
+    deactivate Grasshopper
+    Butterfly-->>Browser: Respond with migration execution confirmation
+    deactivate Butterfly
+    Browser-->>User: Display migration execution status and execution ID
+    deactivate Browser
+```
+
+## Monitor software migration progress and logs
+
+> [!NOTE]
+> ✅ This section is UPDATED.
+
+: Participants: Butterfly, Grasshopper
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Browser as Web Console
+    participant Butterfly as Butterfly
+    participant Grasshopper as Grasshopper
+
+    %% Step 0: User accesses Migration Monitoring View
+    User->>Browser: Access the Migration Monitoring view
+    activate Browser
+    Browser->>Butterfly: Request the Migration Monitoring view
+    activate Butterfly
+    Butterfly-->>Browser: Respond with the view
+    deactivate Butterfly
+    Browser-->>User: Display Migration Monitoring Interface
+    deactivate Browser
+
+    %% Step 1: Monitor Migration Progress
+    User->>Browser: Monitor migration progress
+    activate Browser
+    loop Monitor progress periodically
+        Browser->>Butterfly: Request migration status
+        activate Butterfly
+        Butterfly->>Grasshopper: API call to GET /grasshopper/software/package/migrate/status/{executionId}
+        activate Grasshopper
+        Note over Grasshopper: Check execution status:<br/>- ready, installing, finished, failed<br/>- Progress percentage<br/>- Current package being processed
+        Grasshopper-->>Butterfly: Return real-time migration status
+        deactivate Grasshopper
+        Butterfly-->>Browser: Respond with migration progress
+        deactivate Butterfly
+        Browser-->>User: Update migration progress display
+    end
+    deactivate Browser
+
+    %% Step 2: View Migration Logs
+    User->>Browser: View detailed migration logs
+    activate Browser
+    Browser->>Butterfly: Request migration logs
+    activate Butterfly
+    Butterfly->>Grasshopper: API call to GET /grasshopper/software/package/migrate/log/{executionId}
+    activate Grasshopper
+    Note over Grasshopper: Retrieve logs:<br/>- install.log (installation details)<br/>- migration.log (configuration and service logs)<br/>- Error messages and stack traces
+    Grasshopper-->>Butterfly: Return migration logs
+    deactivate Grasshopper
+    Butterfly-->>Browser: Respond with detailed logs
+    deactivate Butterfly
+    Browser-->>User: Display installation and migration logs
+    deactivate Browser
+```
