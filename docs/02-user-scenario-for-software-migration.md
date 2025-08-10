@@ -234,7 +234,7 @@ sequenceDiagram
     activate Browser
     Browser->>Butterfly: Request to generate migration list
     activate Butterfly
-    Butterfly->>Grasshopper: API call to POST /grasshopper/software/package/migration_list
+    Butterfly->>Grasshopper: API call to POST /grasshopper/software/migration_list
     activate Grasshopper
     Note over Grasshopper: Filter out system packages:<br/>- Library packages (lib.*-dev)<br/>- Container runtimes (docker.*)<br/>- Kernel packages (linux-generic.*)<br/>- Package managers (apt, yum, dnf)
     Grasshopper->>Honeybee: Validate connection info
@@ -291,7 +291,7 @@ sequenceDiagram
     activate Browser
     Browser->>Butterfly: Send migration execution request
     activate Butterfly
-    Butterfly->>Grasshopper: API call to POST /grasshopper/software/package/migrate
+    Butterfly->>Grasshopper: API call to POST /grasshopper/software/migrate
     activate Grasshopper
     
     %% Establish SSH connections
@@ -370,7 +370,7 @@ sequenceDiagram
     loop Monitor progress periodically
         Browser->>Butterfly: Request migration status
         activate Butterfly
-        Butterfly->>Grasshopper: API call to GET /grasshopper/software/package/migrate/status/{executionId}
+        Butterfly->>Grasshopper: API call to GET /grasshopper/software/migrate/status/{executionId}
         activate Grasshopper
         Note over Grasshopper: Check execution status:<br/>- ready, installing, finished, failed<br/>- Progress percentage<br/>- Current package being processed
         Grasshopper-->>Butterfly: Return real-time migration status
@@ -386,7 +386,7 @@ sequenceDiagram
     activate Browser
     Browser->>Butterfly: Request migration logs
     activate Butterfly
-    Butterfly->>Grasshopper: API call to GET /grasshopper/software/package/migrate/log/{executionId}
+    Butterfly->>Grasshopper: API call to GET /grasshopper/software/migrate/log/{executionId}
     activate Grasshopper
     Note over Grasshopper: Retrieve logs:<br/>- install.log (installation details)<br/>- migration.log (configuration and service logs)<br/>- Error messages and stack traces
     Grasshopper-->>Butterfly: Return migration logs
