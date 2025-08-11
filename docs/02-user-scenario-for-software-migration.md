@@ -196,6 +196,22 @@ sequenceDiagram
 
 : Participants: Butterfly, Grasshopper, Honeybee
 
+- 해당 과정은 Honeybee로 부터 Source측의 정제된 Software 목록을 얻고 난 후 사용자의 선택으로 Migration 대상 리스트가 선택되어진 상태에서 Grasshopper에 전달한 후의 동작입니다.
+- Migration List를 가져오는 Grasshopper API에 Honeybee로 부터 얻어온 Software 리스트를 전달하면 패키지 타입에 한해서 아래와 같은 패키지들을 제외하고 의존성으로 참조되는 패키지들을 제외 합니다.
+- Honeybee로 부터 얻어온 Software 리스트에는 메인 패키지외에 의존성으로 같이 존재하거나 환경 구성을 위해 존재하는 패키지들이 있습니다. 해당 패키지들은 주요 메인 패키지를 설치할때 같이 설치되어 지기 때문에, Grasshopper에서는 해당 패키지들을 필터링 하고 마이그레이션 리스트를 작성합니다.
+  - 라이브러리 패키지나 개발용 패키지(보통 lib으로 시작하거나, -dev로 끝나는 경우)
+  - 문서 패키지 (.*-doc, .*-man)
+  - 컨테이너 런타임 관련 패키지 (docker, podman, runc, ...)
+  - Kernel 관련 패키지 (linux-generic.*, kernel.*, ...)
+- 해당 동작은 Migration 과정을 단축시키고 동일한 패키지가 여러번 참조될 수 있는 중복 작업을 방지합니다.
+- 이 과정으로 인해 Honeybee에서 얻어온 Software 목록에서는 전체 소프트웨어 목록을 확인 할 수 있고, Migration List API를 통해 가져온 Software 목록에서는 실제로 Migration 수행시 참조되는 Software 목록을 확인 할 수 있습니다.
+
+1. 사용자는 Honeybee로 부터 Software 목록을 얻은 후에 Migration을 수행할 Software들을 선택하게 됩니다.
+2. Migration List를 가져오는 Grasshopper API에 선택한 Software 리스트를 전달합니다. 이때 Migration 대상 Source 정보를 같이 전달합니다.
+3. Honeybee를 통해서 전달받은 Source 정보가 존재하는지 검증합니다.
+4. 패키지 타입에 한해서 의존성으로 같이 존재하거나 환경 구성을 위해 존재하는 패키지들을 제외 합니다.
+5. Portal에 Software Migration List를 표출하게 됩니다. 이는 Software Migration List이자, Plan에 해당됩니다.
+
 ```mermaid
 sequenceDiagram
     participant User as User
@@ -227,7 +243,7 @@ sequenceDiagram
     activate Butterfly
     Butterfly->>Grasshopper: API call to POST /grasshopper/software/migration_list
     activate Grasshopper
-    Note over Grasshopper: Filter out system packages:<br/>- Library packages (lib.*-dev)<br/>- Container runtimes (docker.*)<br/>- Kernel packages (linux-generic.*)<br/>- Package managers (apt, yum, dnf)
+    Note over Grasshopper: Filter out system packages:<br/>- Library packages (lib.*-dev, *-doc, *-man, ...)<br/>- Container runtimes (.*docker.*, .*podman.*, ...)<br/>- Kernel packages (linux-generic.*, kernel.*, ...)<br/>- Package managers (apt, yum, dnf, ...)
     Grasshopper->>Honeybee: Validate connection info
     activate Honeybee
     Honeybee-->>Grasshopper: Return connection validation result
@@ -238,15 +254,6 @@ sequenceDiagram
     deactivate Butterfly
     Browser-->>User: Display migration plan with filtered packages
     deactivate Browser
-
-    %% Step 2: Review and Modify Migration List
-    opt Review and modify migration list
-        User->>Browser: Review and modify migration packages
-        activate Browser
-        Note over Browser: User can:<br/>- Remove unwanted packages<br/>- Modify package versions<br/>- Set custom configurations<br/>- Define data paths
-        Browser-->>User: Display modified migration plan
-        deactivate Browser
-    end
 ```
 
 ## Execute software migration
