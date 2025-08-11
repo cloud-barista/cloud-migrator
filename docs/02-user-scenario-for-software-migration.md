@@ -254,17 +254,27 @@ sequenceDiagram
     deactivate Butterfly
     Browser-->>User: Display migration plan with filtered packages
     deactivate Browser
+
+    %% Step 2: Review and Modify Migration List
+    opt Review and modify migration list
+        User->>Browser: Review and modify migration packages
+        activate Browser
+        Note over Browser: User can:<br/>- Remove unwanted packages<br/>- Modify package versions<br/>- Set custom configurations<br/>- Define data paths
+        Browser-->>User: Display modified migration plan
+        deactivate Browser
+    end
 ```
 
 ## Execute software migration
 
-: Participants: Butterfly, Grasshopper, Honeybee, Tumblebug
+: Participants: Butterfly, Cicada, Grasshopper, Honeybee, Tumblebug
 
 ```mermaid
 sequenceDiagram
     participant User as User
     participant Browser as Web Console
     participant Butterfly as Butterfly
+    participant Cicada as Cicada
     participant Grasshopper as Grasshopper
     participant Honeybee as Honeybee
     participant Tumblebug as Tumblebug
@@ -281,12 +291,15 @@ sequenceDiagram
     Browser-->>User: Display Migration Execution Interface
     deactivate Browser
 
-    %% Step 1: Select Target and Execute Migration
+    %% Step 1: Create Migration Workflow
     User->>Browser: Select target VM and execute software migration
     activate Browser
     Browser->>Butterfly: Send migration execution request
     activate Butterfly
-    Butterfly->>Grasshopper: API call to POST /grasshopper/software/migrate
+    Butterfly->>Cicada: API call to POST /cicada/workflow to create migration workflow
+    activate Cicada
+    Note over Cicada: Create software migration workflow:<br/>- Generate workflow template<br/>- Configure migration tasks<br/>- Set task dependencies
+    Cicada->>Grasshopper: API call to POST /grasshopper/software/migrate
     activate Grasshopper
     
     %% Establish SSH connections
@@ -327,8 +340,11 @@ sequenceDiagram
     deactivate SourceVM
     deactivate TargetVM
     
-    Grasshopper-->>Butterfly: Return migration execution ID and status
+    Grasshopper-->>Cicada: Return migration execution ID and status
     deactivate Grasshopper
+    Note over Cicada: Monitor workflow execution:<br/>- Track task completion<br/>- Update workflow status<br/>- Generate execution report
+    Cicada-->>Butterfly: Return workflow execution ID and status
+    deactivate Cicada
     Butterfly-->>Browser: Respond with migration execution confirmation
     deactivate Butterfly
     Browser-->>User: Display migration execution status and execution ID
