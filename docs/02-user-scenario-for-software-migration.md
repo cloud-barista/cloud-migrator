@@ -200,9 +200,9 @@ sequenceDiagram
 - Migration List를 가져오는 Grasshopper API에 Honeybee로 부터 얻어온 Software 리스트를 전달하면 패키지 타입에 한해서 아래와 같은 패키지들을 제외하고 의존성으로 참조되는 패키지들을 제외 합니다.
 - Honeybee로 부터 얻어온 Software 리스트에는 메인 패키지외에 의존성으로 같이 존재하거나 환경 구성을 위해 존재하는 패키지들이 있습니다. 해당 패키지들은 주요 메인 패키지를 설치할때 같이 설치되어 지기 때문에, Grasshopper에서는 해당 패키지들을 필터링 하고 마이그레이션 리스트를 작성합니다.
   - 라이브러리 패키지나 개발용 패키지(보통 lib으로 시작하거나, -dev로 끝나는 경우)
-  - 문서 패키지 (.*-doc, .*-man)
+  - 문서 패키지 (.\*-doc, .\*-man)
   - 컨테이너 런타임 관련 패키지 (docker, podman, runc, ...)
-  - Kernel 관련 패키지 (linux-generic.*, kernel.*, ...)
+  - Kernel 관련 패키지 (linux-generic.\*, kernel.\*, ...)
 - 해당 동작은 Migration 과정을 단축시키고 동일한 패키지가 여러번 참조될 수 있는 중복 작업을 방지합니다.
 - 이 과정으로 인해 Honeybee에서 얻어온 Software 목록에서는 전체 소프트웨어 목록을 확인 할 수 있고, Migration List API를 통해 가져온 Software 목록에서는 실제로 Migration 수행시 참조되는 Software 목록을 확인 할 수 있습니다.
 
