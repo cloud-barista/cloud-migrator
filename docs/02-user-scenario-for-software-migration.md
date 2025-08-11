@@ -54,9 +54,6 @@ sequenceDiagram
 
 ## Register the source computing environment and extract software information
 
-> [!NOTE]
-> ✅ This section is UPDATED.
-
 : Participants: Butterfly, Honeybee, Source computing environment
 
 ```mermaid
@@ -130,9 +127,6 @@ sequenceDiagram
 
 ## Retrieve and refine software information from source environment
 
-> [!NOTE]
-> ✅ This section is UPDATED.
-
 : Participants: Butterfly, Honeybee, Damselfly
 
 ```mermaid
@@ -200,9 +194,6 @@ sequenceDiagram
 
 ## Generate software migration list and plan
 
-> [!NOTE]
-> ✅ This section is UPDATED.
-
 : Participants: Butterfly, Grasshopper, Honeybee
 
 ```mermaid
@@ -259,9 +250,6 @@ sequenceDiagram
 ```
 
 ## Execute software migration
-
-> [!NOTE]
-> ✅ This section is UPDATED.
 
 : Participants: Butterfly, Grasshopper, Honeybee, Tumblebug
 
@@ -341,9 +329,6 @@ sequenceDiagram
 ```
 
 ## Monitor software migration progress and logs
-
-> [!NOTE]
-> ✅ This section is UPDATED.
 
 : Participants: Butterfly, Grasshopper
 
