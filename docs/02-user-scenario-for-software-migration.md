@@ -125,9 +125,11 @@ sequenceDiagram
     deactivate WebConsole
 ```
 
-## Retrieve and refine software information from source environment
+## Retrieve and refine software information from source environment, then save it
 
 : Participants: Butterfly, Honeybee, Damselfly
+
+- 해당 과정은 Honeybee로 부터 Source측의 정제된 Software 목록을 얻을 수 있는 Source의 Software Model 입니다.
 
 ```mermaid
 sequenceDiagram
@@ -181,7 +183,7 @@ sequenceDiagram
         activate Browser
         Browser->>Butterfly: Request to save software model
         activate Butterfly
-        Butterfly->>Damselfly: POST /damselfly/softwaremodel
+        Butterfly->>Damselfly: POST /damselfly/softwaremodel/source
         activate Damselfly
         Damselfly-->>Butterfly: Return the saved software model information
         deactivate Damselfly
@@ -192,11 +194,12 @@ sequenceDiagram
     end
 ```
 
-## Generate software migration list and plan
+## Generate target software model, then save it
 
-: Participants: Butterfly, Grasshopper, Honeybee
+: Participants: Butterfly, Grasshopper, Honeybee, Damselfly
 
-- 해당 과정은 Honeybee로 부터 Source측의 정제된 Software 목록을 얻고 난 후 사용자의 선택으로 Migration 대상 리스트가 선택되어진 상태에서 Grasshopper에 전달한 후의 동작입니다.
+- 해당 과정은 Honeybee로 부터 Source측의 정제된 Software 목록을 얻고 난 후 사용자가 원하는 Software들을 선택하고 Migration 리스트를 요청하면 얻을 수 있는 Target의 Software Model 입니다.
+
 - Migration List를 가져오는 Grasshopper API에 Honeybee로 부터 얻어온 Software 리스트를 전달하면 패키지 타입에 한해서 아래와 같은 패키지들을 제외하고 의존성으로 참조되는 패키지들을 제외 합니다.
 - Honeybee로 부터 얻어온 Software 리스트에는 메인 패키지외에 의존성으로 같이 존재하거나 환경 구성을 위해 존재하는 패키지들이 있습니다. 해당 패키지들은 주요 메인 패키지를 설치할때 같이 설치되어 지기 때문에, Grasshopper에서는 해당 패키지들을 필터링 하고 마이그레이션 리스트를 작성합니다.
   - 라이브러리 패키지나 개발용 패키지(보통 lib으로 시작하거나, -dev로 끝나는 경우)
@@ -204,13 +207,19 @@ sequenceDiagram
   - 컨테이너 런타임 관련 패키지 (docker, podman, runc, ...)
   - Kernel 관련 패키지 (linux-generic.\*, kernel.\*, ...)
 - 해당 동작은 Migration 과정을 단축시키고 동일한 패키지가 여러번 참조될 수 있는 중복 작업을 방지합니다.
-- 이 과정으로 인해 Honeybee에서 얻어온 Software 목록에서는 전체 소프트웨어 목록을 확인 할 수 있고, Migration List API를 통해 가져온 Software 목록에서는 실제로 Migration 수행시 참조되는 Software 목록을 확인 할 수 있습니다.
+- 이 과정으로 인해 Grasshopper를 통해서 Target 쪽으로 Migration 수행시 실제로 참조되는 Software 목록을 확인 할 수 있습니다.
+- 이 목록은 Target에 Software들을 구성하기 위한 Target Software Model이 됩니다.
 
-1. 사용자는 Honeybee로 부터 Software 목록을 얻은 후에 Migration을 수행할 Software들을 선택하게 됩니다.
-2. Migration List를 가져오는 Grasshopper API에 선택한 Software 리스트를 전달합니다. 이때 Migration 대상 Source 정보를 같이 전달합니다.
-3. Honeybee를 통해서 전달받은 Source 정보가 존재하는지 검증합니다.
-4. 패키지 타입에 한해서 의존성으로 같이 존재하거나 환경 구성을 위해 존재하는 패키지들을 제외 합니다.
-5. Portal에 Software Migration List를 표출하게 됩니다. 이는 Software Migration List이자, Plan에 해당됩니다.
+1. 사용자는 Web Console을 통해 저장된 Source Software 목록을 조회합니다.
+2. Butterlfy 모듈이 Damselfly로 부터 저장된 Source Software 목록을 가져옵니다.
+3. Web Console에 저장된 Source Software 목록이 표출됩니다.
+4. 사용자가 Web Console을 통해 Target Software 목록 요청을 합니다.
+5. Butterfly 모듈이 Grasshopper 모듈로 Migration List를 가져오는 API에 Source Software 목록을 전달합니다.
+6. 패키지 타입에 한해서 의존성으로 같이 존재하거나 환경 구성을 위해 존재하는 패키지들을 제외 합니다.
+7. Web Console에 Software Migration List를 표출하게 됩니다. 이는 Target Software Model이 됩니다.
+8. 사용자가 Web Console을 통해 Target Software Model 저장 요청을 합니다.
+9. Butterlfy 모듈이 Damselfly 모듈로 Target Software Model을 저장하는 API를 요청합니다.
+10. 저장된 Target Software는 추후 Target에 Software Migration을 수행하는데 사용됩니다.
 
 ```mermaid
 sequenceDiagram
@@ -219,61 +228,81 @@ sequenceDiagram
     participant Butterfly as Butterfly
     participant Grasshopper as Grasshopper
     participant Honeybee as Honeybee
+    participant Damselfly as Damselfly
 
     %% Step 0: User accesses Software Migration Management View
     User->>Browser: Access the Software Migration Management view
     activate Browser
     Browser->>Butterfly: Request the Software Migration Management view
     activate Butterfly
-    opt Retrieve refined software data from Honeybee
-        Butterfly->>Honeybee: API call to GET /honeybee/source_group/{sgID}/software/refined
-        activate Honeybee
-        Honeybee-->>Butterfly: Return refined software data
-        deactivate Honeybee
-    end
-    Butterfly-->>Browser: Respond with the view
+    
+    %% Step 1: Retrieve saved Source Software Model list from Damselfly
+    Butterfly->>Damselfly: API call to GET /damselfly/softwaremodel/source (list all source software models)
+    activate Damselfly
+    Damselfly-->>Butterfly: Return list of saved source software models
+    deactivate Damselfly
+    
+    Butterfly-->>Browser: Respond with the view and source software model list
     deactivate Butterfly
-    Browser-->>User: Display Software Migration Management Interface
+    Browser-->>User: Display Software Migration Management Interface with source software model list
     deactivate Browser
 
-    %% Step 1: Generate Migration List
-    User->>Browser: Generate software migration list
+    %% Step 2: Load specific Source Software Model
+    User->>Browser: Select and load specific source software model
     activate Browser
-    Browser->>Butterfly: Request to generate migration list
+    Browser->>Butterfly: Request to load specific source software model
     activate Butterfly
-    Butterfly->>Grasshopper: API call to POST /grasshopper/software/migration_list
-    activate Grasshopper
-    Note over Grasshopper: Filter out system packages:<br/>- Library packages (lib.*-dev, *-doc, *-man, ...)<br/>- Container runtimes (.*docker.*, .*podman.*, ...)<br/>- Kernel packages (linux-generic.*, kernel.*, ...)<br/>- Package managers (apt, yum, dnf, ...)
-    Grasshopper->>Honeybee: Validate connection info
-    activate Honeybee
-    Honeybee-->>Grasshopper: Return connection validation result
-    deactivate Honeybee
-    Grasshopper-->>Butterfly: Return filtered migration package list
-    deactivate Grasshopper
-    Butterfly-->>Browser: Respond with migration list
+    Butterfly->>Damselfly: API call to GET /damselfly/softwaremodel/source/{id} (retrieve specific source software model)
+    activate Damselfly
+    Damselfly-->>Butterfly: Return specific source software model data
+    deactivate Damselfly
+    Butterfly-->>Browser: Respond with source software model data
     deactivate Butterfly
-    Browser-->>User: Display migration plan with filtered packages
+    Browser-->>User: Display selected source software model details
     deactivate Browser
 
-    %% Step 2: Review and Modify Migration List
-    opt Review and modify migration list
-        User->>Browser: Review and modify migration packages
-        activate Browser
-        Note over Browser: User can:<br/>- Remove unwanted packages<br/>- Modify package versions<br/>- Set custom configurations<br/>- Define data paths
-        Browser-->>User: Display modified migration plan
-        deactivate Browser
-    end
+    %% Step 3: Generate Target Software Migration List
+    User->>Browser: Request to generate target software migration list
+    activate Browser
+    Browser->>Butterfly: Request to generate target software migration list
+    activate Butterfly
+    Butterfly->>Grasshopper: API call to POST /grasshopper/software/migration_list (with source software model data)
+    activate Grasshopper
+    Note over Grasshopper: Filter out dependency packages:<br/>- Library packages (lib.*, *-dev)<br/>- Documentation packages (*-doc, *-man)<br/>- Container runtimes (docker, podman, runc, ...)<br/>- Kernel packages (linux-generic.*, kernel.*, ...)<br/>- Environment setup packages
+    Grasshopper-->>Butterfly: Return filtered migration list (Target Software Model)
+    deactivate Grasshopper
+    Butterfly-->>Browser: Respond with target software migration list
+    deactivate Butterfly
+    Browser-->>User: Display target software migration list (Target Software Model)
+    deactivate Browser
+
+    %% Step 4: Save Target Software Model
+    User->>Browser: Request to save Target Software Model
+    activate Browser
+    Browser->>Butterfly: Request to save Target Software Model
+    activate Butterfly
+    Butterfly->>Damselfly: API call to POST /damselfly/softwaremodel/target (save target software model)
+    activate Damselfly
+    Damselfly-->>Butterfly: Return saved Target Software Model confirmation
+    deactivate Damselfly
+    Butterfly-->>Browser: Respond with save confirmation
+    deactivate Butterfly
+    Browser-->>User: Display Target Software Model save confirmation
+    deactivate Browser
+    
+    Note over User, Damselfly: The saved Target Software Model will be used<br/>for software migration execution
 ```
 
 ## Execute software migration
 
-: Participants: Butterfly, Cicada, Grasshopper, Honeybee, Tumblebug
+: Participants: Butterfly, Cicada, Damselfly, Grasshopper, Honeybee, Tumblebug
 
 ```mermaid
 sequenceDiagram
     participant User as User
     participant Browser as Web Console
     participant Butterfly as Butterfly
+    participant Damselfly as Damselfly
     participant Cicada as Cicada
     participant Grasshopper as Grasshopper
     participant Honeybee as Honeybee
@@ -281,25 +310,101 @@ sequenceDiagram
     participant SourceVM as Source VM
     participant TargetVM as Target VM
 
-    %% Step 0: User accesses Software Migration Execution View
-    User->>Browser: Access the Software Migration Execution view
+    %% Step 0: User accesses Target Software Model Management View
+    User->>Browser: Access the Target Software Model Management view
     activate Browser
-    Browser->>Butterfly: Request the Software Migration Execution view
+    Browser->>Butterfly: Request the Target Software Model Management view
     activate Butterfly
-    Butterfly-->>Browser: Respond with the view and available target VMs
+    
+    %% Retrieve saved Target Software Models
+    Butterfly->>Damselfly: API call to GET /damselfly/softwaremodel/target (list target software models)
+    activate Damselfly
+    Damselfly-->>Butterfly: Return list of saved target software models
+    deactivate Damselfly
+    
+    Butterfly-->>Browser: Respond with the view and target software models
     deactivate Butterfly
-    Browser-->>User: Display Migration Execution Interface
+    Browser-->>User: Display Target Software Model Management Interface
     deactivate Browser
 
-    %% Step 1: Create Migration Workflow
-    User->>Browser: Select target VM and execute software migration
+    %% Step 1: Select Target Software Model
+    User->>Browser: Select target software model for migration
     activate Browser
-    Browser->>Butterfly: Send migration execution request
+    Browser->>Butterfly: Send request with selected target software model ID
     activate Butterfly
-    Butterfly->>Cicada: API call to POST /cicada/workflow to create migration workflow
+    
+    %% Retrieve specific Target Software Model
+    Butterfly->>Damselfly: API call to GET /damselfly/softwaremodel/target/{id} (retrieve specific target software model)
+    activate Damselfly
+    Damselfly-->>Butterfly: Return target software model data
+    deactivate Damselfly
+    
+    Butterfly-->>Browser: Respond with target software model data
+    deactivate Butterfly
+    Browser-->>User: Display selected target software model details
+    deactivate Browser
+
+    %% Step 2: Access VM Management and Query Available VMs
+    User->>Browser: Access VM Management menu in portal
+    activate Browser
+    Browser->>Butterfly: Request VM Management view
+    activate Butterfly
+    
+    %% Query available VMs from Tumblebug
+    Butterfly->>Tumblebug: API call to GET /tumblebug/ns/{nsId}/mcis (query available VMs)
+    activate Tumblebug
+    Tumblebug-->>Butterfly: Return list of available VMs and their details
+    deactivate Tumblebug
+    
+    Butterfly-->>Browser: Respond with VM list and details
+    deactivate Butterfly
+    Browser-->>User: Display available VMs for migration target
+    deactivate Browser
+
+    %% Step 3: Query Software Migration Workflow Templates
+    User->>Browser: Access Workflow Template selection
+    activate Browser
+    Browser->>Butterfly: Request software migration workflow templates
+    activate Butterfly
+    
+    %% Query Software Migration Workflow Templates from Cicada
+    Butterfly->>Cicada: API call to GET /cicada/workflow/templates (query software migration workflow templates)
     activate Cicada
-    Note over Cicada: Create software migration workflow:<br/>- Generate workflow template<br/>- Configure migration tasks<br/>- Set task dependencies
-    Cicada->>Grasshopper: API call to POST /grasshopper/software/migrate
+    Note over Cicada: Return available templates:<br/>- migrate_software_workflow<br/>- custom migration templates<br/>- task component configurations
+    Cicada-->>Butterfly: Return available software migration workflow templates
+    deactivate Cicada
+    
+    Butterfly-->>Browser: Respond with workflow templates
+    deactivate Butterfly
+    Browser-->>User: Display available workflow templates
+    deactivate Browser
+
+    %% Step 4: Create Migration Workflow
+    User->>Browser: Select target VM and workflow template, create migration workflow
+    activate Browser
+    Browser->>Butterfly: Send workflow creation request with target VM and template
+    activate Butterfly
+    Butterfly->>Cicada: API call to POST /cicada/workflow (create migration workflow based on target software model, target VM, and selected template)
+    activate Cicada
+    Note over Cicada: Create software migration workflow:<br/>- Use target software model data<br/>- Apply selected workflow template<br/>- Configure target VM information<br/>- Set task dependencies and execution order<br/>- Generate workflow DAG
+    Cicada-->>Butterfly: Return created workflow ID and configuration
+    deactivate Cicada
+    Butterfly-->>Browser: Respond with workflow creation confirmation
+    deactivate Butterfly
+    Browser-->>User: Display created workflow details and workflow ID
+    deactivate Browser
+
+    %% Step 5: Execute Migration Workflow
+    User->>Browser: Execute the created migration workflow
+    activate Browser
+    Browser->>Butterfly: Send workflow execution request with workflow ID
+    activate Butterfly
+    Butterfly->>Cicada: API call to POST /cicada/workflow/{workflowId}/run (execute the migration workflow)
+    activate Cicada
+    Note over Cicada: Execute workflow:<br/>- Start workflow execution<br/>- Trigger task components in sequence<br/>- Monitor task dependencies
+    
+    %% Cicada triggers Grasshopper tasks through workflow execution
+    Cicada->>Grasshopper: Execute software migration tasks (via workflow)
     activate Grasshopper
     
     %% Establish SSH connections
@@ -319,9 +424,9 @@ sequenceDiagram
     Grasshopper->>TargetVM: Establish SSH connection  
     activate TargetVM
     
-    %% Execute migration for each software package
-    loop For each software package in migration list
-        Note over Grasshopper: Update status to "installing"
+    %% Execute migration for each software package in Target Software Model
+    loop For each software package in Target Software Model
+        Note over Grasshopper: Update status to "installing"<br/>Process software from target software model
         Grasshopper->>TargetVM: Run Ansible playbook for package installation
         TargetVM-->>Grasshopper: Return installation result
         
@@ -340,14 +445,14 @@ sequenceDiagram
     deactivate SourceVM
     deactivate TargetVM
     
-    Grasshopper-->>Cicada: Return migration execution ID and status
+    Grasshopper-->>Cicada: Return migration task results and status
     deactivate Grasshopper
-    Note over Cicada: Monitor workflow execution:<br/>- Track task completion<br/>- Update workflow status<br/>- Generate execution report
-    Cicada-->>Butterfly: Return workflow execution ID and status
+    Note over Cicada: Monitor workflow execution:<br/>- Track task completion<br/>- Update workflow status<br/>- Generate execution report<br/>- Handle task failures and retries
+    Cicada-->>Butterfly: Return workflow execution status and results
     deactivate Cicada
-    Butterfly-->>Browser: Respond with migration execution confirmation
+    Butterfly-->>Browser: Respond with workflow execution status
     deactivate Butterfly
-    Browser-->>User: Display migration execution status and execution ID
+    Browser-->>User: Display workflow execution status and progress
     deactivate Browser
 ```
 
