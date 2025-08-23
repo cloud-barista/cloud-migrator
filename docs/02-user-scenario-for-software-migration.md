@@ -316,6 +316,7 @@ sequenceDiagram
     participant Cicada as Cicada
     participant Grasshopper as Grasshopper
     participant Honeybee as Honeybee
+    participant Beetle as Beetle
     participant Tumblebug as Tumblebug
     participant SourceVM as Source VM
     participant TargetVM as Target VM
