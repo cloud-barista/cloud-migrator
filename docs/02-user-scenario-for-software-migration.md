@@ -204,8 +204,8 @@ sequenceDiagram
 
 : Participants: Butterfly, Grasshopper, Honeybee, Damselfly
 
-- 해당 과정은 사용자가 클라우드에 SW 마이그레이션 실행할 수 있는 상태/수준의 SW 목록(Target SW model)을 얻는 과정을 나타냅니다.
-- 사용자는 Honeybee(Portal)에서 소스 컴퓨팅 환경의 정제된 Software 목록을 얻고 사용자가 원하는 Software들을 선택한 후, Target SW model을 요청합니다. 이 때, 내부적으로 Grasshopper API가 호출됩니다.
+- 해당 과정은 사용자가 클라우드에 SW 마이그레이션을 실행할 수 있는 상태/수준의 Software 목록(Target Software model)을 얻는 과정을 나타냅니다.
+- 사용자는 Portal을 통해 Honeybee로 부터 소스 컴퓨팅 환경의 정제된 Software 목록을 얻고 사용자가 원하는 Software들을 선택한 후, Target Software model을 요청합니다. 이 때, 내부적으로 Grasshopper API가 호출됩니다.
 
 - Migration List를 가져오는 Grasshopper API에 Honeybee로 부터 얻어온 Software 리스트를 전달하면 패키지 타입에 한해서 아래와 같은 패키지들을 제외하고 의존성으로 참조되는 패키지들을 제외 합니다.
 - Honeybee로 부터 얻어온 Software 리스트에는 메인 패키지외에 의존성으로 같이 존재하거나 환경 구성을 위해 존재하는 패키지들이 있습니다. 해당 패키지들은 주요 메인 패키지를 설치할때 같이 설치되어 지기 때문에, Grasshopper에서는 해당 패키지들을 필터링 하고 마이그레이션 리스트를 작성합니다.
