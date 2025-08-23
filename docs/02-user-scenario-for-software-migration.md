@@ -360,11 +360,19 @@ sequenceDiagram
     Browser->>Butterfly: Request VM Management view
     activate Butterfly
     
-    %% Query available VMs from Tumblebug
-    Butterfly->>Tumblebug: API call to GET /tumblebug/ns/{nsId}/mcis (query available VMs)
-    activate Tumblebug
-    Tumblebug-->>Butterfly: Return list of available VMs and their details
-    deactivate Tumblebug
+    %% Query MCI list from Beetle
+    Butterfly->>Beetle: API call to GET /migration/ns/{nsId}/mci (query MCI list, or MCI ID list with query param (option=id))
+    activate Beetle
+    Beetle-->>Butterfly: Return list of MCIs or MCI IDs
+    Butterfly-->>Browser: Respond with the list of MCIs or MCI IDs 
+    Browser-->>User: Display the list of MCIs or MCI IDs 
+       
+    %% Query available VMs from Beetle
+    User->>Browser: Select an MCI and query to get available VMs 
+    Browser->>Butterfly: Request the selected MCI info to get available VMs
+    Butterfly->>Beetle: API call to GET /migration/ns/{nsId}/mci/{mciId} (query available VMs)
+    Beetle-->>Butterfly: Return list of available VMs and their details
+    deactivate Beetle
     
     Butterfly-->>Browser: Respond with VM list and details
     deactivate Butterfly
