@@ -26,6 +26,8 @@ The sequence diagrams represent user scenarios for software migration.
 
 : Participants: Butterfly
 
+[View Mermaid in Full Screen](https://mermaid.live/view#pako:eNqdVNtqGzEQ_ZVBEGhhbbyO7V3vQ6Bx-hgoMWmg-EVZTdaCXWmri13X-N872htu4zaketKMzhwdHWl0ZLkWyDJm8btHleOd5IXh1UYBjZobJ3NZc-Xg0aIBbmHDwmzDXiNujd4PoCd8hpVWVpd4CUvLazS7Hn3rnUPzUh4CtkVfXcHaYQ1xBp_yHK0Ft0VYldqL0b0kjU4bON-lqQraRjc3nZR3lfLcyR132J-jzXYBcQ6SM3gIZlkHHHYS9-A0lLqQ6g-eoaDND-HoXOADOm9UI_ACl8C_sZ2tDHp_N26awWdFrrZ8kBsUqJzkpb1s1T_B7zBnjUq8poEPYT_FK4zgC7d2r434-D-GfeWlFAHNaRvTuie43T5rbgS9sQLfsq5XTayPDeWdtHXJD2_RdHUsYhWaiktBbXMMqA2j66vonWc0FfjCfenCQz4RlHun1weVs8wZjxEz2hfbPvB1OEnXcn2S-uOb1uchy47sB8uu42Q8maXJIo6v54tpsozYgWXzZEyJeBFPltM0TeNkforYz4ZgMp7PCEpjMk2X8XwWscIE2Z0Uuig0K-2VI5qIoZDUGPftf9B8C6dfNsBh3g)
+
 ```mermaid
 sequenceDiagram
     participant User as "User"
@@ -52,40 +54,480 @@ sequenceDiagram
     deactivate Browser
 ```
 
-## User scenarios
+## Register the source computing environment and extract software information
 
-> [!NOTE]
-> 현재 도출된 사용자 시나리오 초안 입니다.
-> 향후, 각 시나리오 별로 Sequence Diagram을 작성할 예정 입니다.
-> 참고 - [Computing Infrastructure Migration Scenario](./01-user-scenario-for-computing-infra-migration.md)
+: Participants: Butterfly, Honeybee, Source computing environment
 
-(소스 컴퓨팅 환경에서 SW 형상 정보(Raw data) 또는 소스 SW 모델(Refined) 추출)
+[View Mermaid in Full Screen](https://mermaid.live/view#pako:eNqtV9tu4jAQ_RXLUqVWolzaUmgekHZL1eVhtVXZi7RCqlwzgLXEztoOLYv49x3HSQi3cml5wU5mzozPnBPCjHLVBxpQA39jkBzagg01C3uS4Cdi2gouIiYt-WFAE2aS7_W7v-D5VkmjxuBicEfS7Xro59ha0IPx1EXmm_W4L0rC9BkSwGy9HtXV_E5OXExXxZoD1g2j2Ao5JHhdaCVDkLYnfebJCelaiEg1SM_DORgDbyeTr0yyISTLnwJePJTLP2-1FgcPyKcEjdgRkAnGETXYF9dDMm7FhFkosOlvLPZYMacsII9uaMYmFfc9wSQ_QV5uZQj59nzlfI9gIiX75EXYUX5Kn9OHbWiF3hHOsRaQtjDRmE2znrd02pEOh3FYK1HkZ3mwNdflUBjMzNDvtYqjrTPLo42PHi6iDx5HF5Acnc1E4XI39lbuW61M9Cishw7hbDx2oA_fut9JZZTeq3jop03Qy6bJduerErKxlsk0i12STpucmmGnfbZG_jLsfmIpjiKlXDMrlHSPiYHQod-cOkFVQjQRauDsGGV1R-pl-SC6WI0Xqh2gqouCTjBEAk_QOnKgdguLLxIEJnhCHLUfrbJ9C32k5CozV2BeWdR-Ejkru5TYavmnd4BMGuuK4djR-GpJj0jtBLRZgfSZ_qJfny_1n-raAwoP7zWASxubtekXAXd7JSMd-qu0b1PXMbZZnSjDG779D7BK9hAuFFnyyqLYAU65DMjdKyJw_GVWA_vCNCQ2WWJlg1uyJJMlFagkA63Ct9VwrHfgjbLvdc393S7TiDBS2lay4oea5laNx1BsPmL8D6rBlNxMLRMSiSr5OSJrAl9OjjPRxqGcbq4GlpfP3mmudCrore1zeaezcuC01s4fhwMMtQl7p5FoiYaAxUUfX8ZnLrBHkYsQejTAZR8GLB7bHu3JOYay2KruVHIaWB1DiaKqhqNsE0d9xE5f5LOL-LL8W6nilgYz-kqDy1qjXL1qNq5rtcv69UXjpkSnNKg3ynihdl2r3lw0m81aoz4v0X8JQLVcv8JQ_FQvmje1-lWJDrVrO20FLQb6VsXSIkyJQl9Ypb_6fxnJn435f4hkXV0)
 
-1. (사용자가) CM portal 에서 소스 그룹 및 연결 정보 등록 요청 :arrow_right: (Honeybee API 호출됨) Honeybee가 대상 Server들에 Agent를 설치함 (비동기)
-2. (사용자가) CM portal 에서 소스 컴퓨팅 환경의 SW 분석 및 추출 요청 :arrow_right: (Honeybee API 호출됨) Honeybee가 SW 형상 정보 / 소스 SW 모델을 제공함
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant WebConsole as Web Console
+    participant Butterfly as Butterfly
+    participant Honeybee as Honeybee
+    participant SrcEnv as Source Computing Environment
 
-(소스/목표 SW 사용자 모델 운영 및 관리)
+    %% Step 0: User accesses Source Computing Environment Management View
+    User->>WebConsole: Access the view of Source Computing Environment Management
+    activate WebConsole
+    WebConsole->>Butterfly: Request the Source Computing Environment Management view
+    activate Butterfly
+    Butterfly-->>WebConsole: Respond with the view
+    deactivate Butterfly
+    WebConsole-->>User: Display Source Environment Management Interface
+    deactivate WebConsole
 
-3. (사용자가) CM portal 에서 소스 SW 모델을 소스 SW 사용자 모델로서 저장 요청 :arrow_right: (Damselfly API 호출됨) Damselfly가 소스 SW 사용자 모델을 저장 및 관리함
-4. (사용자가) CM portal 에서 소스 SW 사용자 모델을 확인 및 수정하여, 목표 SW 사용자 모델로 저장을 요청 :arrow_right: (Damselfly API 호출됨) Damselfly가 목표 SW 사용자 모델을 저장 및 관리함
+    %% Step 1: Register Source Group
+    User->>WebConsole: Register source group
+    activate WebConsole
+    WebConsole->>Butterfly: Send request to register source group
+    activate Butterfly
+    Butterfly->>Honeybee: API call to POST /honeybee/source_group
+    activate Honeybee
+    Honeybee-->>Butterfly: Return the source group ID (sgID)
+    deactivate Honeybee
+    Butterfly-->>WebConsole: Respond with Source Group Registration Confirmation (view/message)
+    deactivate Butterfly
+    WebConsole-->>User: Show source group registration confirmation
+    deactivate WebConsole
 
-(SW 마이그레이션 대상 패키지 등록)
+    %% Step 2: Register Connection Info
+    User->>WebConsole: Register connection info with sgID
+    activate WebConsole
+    WebConsole->>Butterfly: Send request to register connection info with sgID
+    activate Butterfly
+    Butterfly->>Honeybee: API call to POST /honeybee/source_group/{sgID}/connection_info
+    activate Honeybee
+    Honeybee->>SrcEnv: Install agent on the source servers
+    activate SrcEnv
+    SrcEnv-->>Honeybee: Return agent installation status
+    deactivate SrcEnv
+    Honeybee-->>Butterfly: Return the registered connection information
+    deactivate Honeybee
+    Butterfly-->>WebConsole: Respond with connection info and status (view/message)
+    deactivate Butterfly
+    WebConsole-->>User: Display connection registration and status
+    deactivate WebConsole
 
-5. (사용자가) CM portal 에서 목표 SW 사용자 모델을 SW 마이그레이션 대상 패키지로 등록 요청 :arrow_right: (Grasshopper API 호출됨) Grasshopper가 목표 SW 사용자 모델을 바탕으로 Ansible Playbook을 생성, 저장 및 관리함
+    %% Step 3: Extract Software Information
+    User->>WebConsole: Extract software information from source servers
+    activate WebConsole
+    WebConsole->>Butterfly: Send request to extract software information
+    activate Butterfly
+    Butterfly->>Honeybee: API call to GET /honeybee/source_group/{sgID}/import/software
+    activate Honeybee
+    Honeybee->>SrcEnv: Collect software packages, containers, and services
+    activate SrcEnv
+    SrcEnv-->>Honeybee: Return software information (packages, containers, etc.)
+    deactivate SrcEnv
+    Honeybee-->>Butterfly: Return the extracted software information
+    deactivate Honeybee
+    Butterfly-->>WebConsole: Respond with software extraction confirmation
+    deactivate Butterfly
+    WebConsole-->>User: Display software extraction status
+    deactivate WebConsole
+```
 
-(SW 마이그레이션 워크플로우 생성 및 실행)
+## Retrieve and refine software information from source environment, then save it
 
-6. (사용자가) CM portal 에서 SW 마이그레이션 Workflow template 조회 (사전 정의 필요) :arrow_right: (Cicada API 호출됨) Cicada에서 SW 마이그레이션 Workflow template 제공
-7. (사용자가) CM portal 에서 SW 마이그레이션 Workflow 수정 후, 생성 요청 :arrow_right: (Cicada API 호출됨) Cicada에서 입력된 SW 마이그레이션 Workflow 생성/저장 및 관리
-   (사용자가) CM portal 에서 SW 마이그레이션 Workflow 실행 요청 :arrow_right: (Cicada API 호출됨) SW 마이그레이션 Workflow 실행 :arrow_right: (Grasshopper API 호출됨) SW 마이그레이션 실행 :arrow_right: (Tumblebug API 호출됨) 대상 VM 접속 정보 조회 :arrow_right: (Grasshopper에서) 기 정의된 Playbook을 바탕으로 SW 마이그레이션 실행 :arrow_right: (Grasshopper에서) SW 구동에 필요한 파일/정보/데이터를 전송/복사/주입
-8. (사용자가) CM portal 에서 SW 마이그레이션 Workflow 실행 결과 조회 :arrow_right: (Cicada API 호출됨) SW 마이그레이션 Workflow 실행 결과 제공
+: Participants: Butterfly, Honeybee, Damselfly
 
-(마이그레이션된 SW 구동 상태 확인)
+- 해당 과정은 Honeybee로 부터 Source측의 정제된 Software 목록을 얻을 수 있는 Source의 Software Model 입니다.
 
-9. (사용자가) CM portal 에서 마이그레이션된 SW 구동 상태 확인 요청 :arrow_right: (Grasshopper API 호출됨) 소프트웨어 구동 상태 제공
+[View Mermaid in Full Screen](https://mermaid.live/view#pako:eNq1lm1v2jAQx7-KZanSJtFCaCk0L5C2MnWd1LWCdZMmpMlNLmApsTPbKWOI777Lg8NTKCnb8gZ8Of_ufPeP7QX1pA_UpRp-JiA8GHA2USwaC4JPzJThHo-ZMORRgyJMZ7-7b98rOSscvsETuZZCyxAq_BJjQAXhPPUsB7t-H6WA-RNA6mb_73oNWKQhLGjlYCxyz5MTMjIQk5ZbJO95oDVoMpKBmTEF5I7jWg2XgtwxwSYQAUK_cpjlgHTWab9frM0l7zIAMVM4gHguEcwz_JkZsAXKrcUgZdsSuGSYdkCbI_GbpSyHp-v5D0HHUvhkxs00C7MC-bAXVeSKoMeMMuA6Dtn8QI63IoUwD3b5thKbXXJccgOGDNlsRR4ww6pbMQSjODwDUeivrb-P_iRQMkJTomzsY3ogidoboW7p-32rXJTOwy3xWBim5JsPX0hzWrxq5pn-mCiZxM2FntwOlk0bbivS5odgR6fbSzCJEvuyXuvDJq2GYg4j60pnt2lckE-j-88EfG6kqquZdqEZCLgA_3W6Kea82Nnj9FKH_P800yzi_412qlZA3gQ8REe0M1RErGS2m_pv_4Gw9lfsGHFVZv9qgd3H6ZbGwkxpLhkxbG26Z-a1X9EjPD_DfJaMTS2_KmFm8w7MqRZmHXHqnH4Iu1nhbWWWB6xLHu5HqEffGkrxZeTm-ua7EWDtiLbvSlO1FLNKYvL-VvbYz0CqKDt2VrC1hlaEqnkoZrXypAj4S_yqWu1T5Cuo640F4dMGjQAncB-vaIvUPKZIi2BMXfzrQ8CS0IzpWCzRlSVGjubCo65RCTQobg-TqR0kMX4H9npnjXiL-i7l-pC6C_qLuudO96x10eteOs5557LdvWrQOXU73TM0OJdO66rd6_WcbmfZoL8zQOusc4Gu-LTavSunc9GgE5WmXaSCiwF1LRNhENOg-Wd4l989syvo8g8ty56q)
 
----
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Browser as Web Console
+    participant Butterfly as Butterfly
+    participant Honeybee as Honeybee
+    participant Damselfly as Damselfly
 
-여기서 부터 Sequence Diagram 작성됨
+    %% Step 0: User accesses Software Migration Management View
+    User->>Browser: Access the Software Migration Management view
+    activate Browser
+    Browser->>Butterfly: Request the Software Migration Management view
+    activate Butterfly
+    Butterfly-->>Browser: Respond with the view
+    deactivate Butterfly
+    Browser-->>User: Display Software Migration Management Interface
+    deactivate Browser
 
-## TBD
+    %% Step 1: Get Raw Software Data
+    User->>Browser: Retrieve raw software data from source
+    activate Browser
+    Browser->>Butterfly: Request to retrieve raw software data
+    activate Butterfly
+    Butterfly->>Honeybee: API call to GET /honeybee/source_group/{sgID}/software
+    activate Honeybee
+    Honeybee-->>Butterfly: Return raw software data
+    deactivate Honeybee
+    Butterfly-->>Browser: Respond with raw software data
+    deactivate Butterfly
+    Browser-->>User: Display raw software data in JSON editor
+    deactivate Browser
+
+    %% Step 2: Get Refined Software Data
+    User->>Browser: Retrieve refined software data
+    activate Browser
+    Browser->>Butterfly: Request to retrieve refined software data
+    activate Butterfly
+    Butterfly->>Honeybee: API call to GET /honeybee/source_group/{sgID}/software/refined
+    activate Honeybee
+    Honeybee-->>Butterfly: Return refined software data (filtered and processed)
+    deactivate Honeybee
+    Butterfly-->>Browser: Respond with refined software data
+    deactivate Butterfly
+    Browser-->>User: Display refined software data in JSON editor
+    deactivate Browser
+
+    %% Optional Step: Save the source software model
+    opt Save the source software model
+        User->>Browser: Save source software model
+        activate Browser
+        Browser->>Butterfly: Request to save software model
+        activate Butterfly
+        Butterfly->>Damselfly: POST /damselfly/softwaremodel/source
+        activate Damselfly
+        Damselfly-->>Butterfly: Return the saved software model information
+        deactivate Damselfly
+        Butterfly-->>Browser: Respond with the save confirmation
+        deactivate Butterfly
+        Browser-->>User: Display the save confirmation
+        deactivate Browser
+    end
+```
+
+## Generate target software model, then save it
+
+: Participants: Butterfly, Grasshopper, Honeybee, Damselfly
+
+- 해당 과정은 사용자가 클라우드에 SW 마이그레이션을 실행할 수 있는 상태/수준의 Software 목록(Target Software model)을 얻는 과정을 나타냅니다.
+- 사용자는 Portal을 통해 Honeybee로 부터 소스 컴퓨팅 환경의 정제된 Software 목록을 얻고 사용자가 원하는 Software들을 선택한 후, Target Software model을 요청합니다. 이 때, 내부적으로 Grasshopper API가 호출됩니다.
+
+- Migration List를 가져오는 Grasshopper API에 Honeybee로 부터 얻어온 Software 리스트를 전달하면 패키지 타입에 한해서 아래와 같은 패키지들을 제외하고 의존성으로 참조되는 패키지들을 제외 합니다.
+- Honeybee로 부터 얻어온 Software 리스트에는 메인 패키지외에 의존성으로 같이 존재하거나 환경 구성을 위해 존재하는 패키지들이 있습니다. 해당 패키지들은 주요 메인 패키지를 설치할때 같이 설치되어 지기 때문에, Grasshopper에서는 해당 패키지들을 필터링 하고 마이그레이션 리스트를 작성합니다.
+  - 라이브러리 패키지나 개발용 패키지(보통 lib으로 시작하거나, -dev로 끝나는 경우)
+  - 문서 패키지 (.\*-doc, .\*-man)
+  - 컨테이너 런타임 관련 패키지 (docker, podman, runc, ...)
+  - Kernel 관련 패키지 (linux-generic.\*, kernel.\*, ...)
+- 해당 동작은 Migration 과정을 단축시키고 동일한 패키지가 여러번 참조될 수 있는 중복 작업을 방지합니다.
+- 이 과정으로 인해 Grasshopper를 통해서 Target 쪽으로 Migration 수행시 실제로 참조되는 Software 목록을 확인 할 수 있습니다.
+- 이 목록은 Target에 Software들을 구성하기 위한 Target Software Model이 됩니다.
+
+1. 사용자는 Web Console을 통해 저장된 Source Software 목록을 조회합니다.
+2. Butterlfy 모듈이 Damselfly로 부터 저장된 Source Software 목록을 가져옵니다.
+3. Web Console에 저장된 Source Software 목록이 표출됩니다.
+4. 사용자가 Web Console을 통해 Target Software 목록 요청을 합니다.
+5. Butterfly 모듈이 Grasshopper 모듈로 Migration List를 가져오는 API에 Source Software 목록을 전달합니다.
+6. 패키지 타입에 한해서 의존성으로 같이 존재하거나 환경 구성을 위해 존재하는 패키지들을 제외 합니다.
+7. Web Console에 Software Migration List를 표출하게 됩니다. 이는 Target Software Model이 됩니다.
+8. 사용자가 Web Console을 통해 Target Software Model 저장 요청을 합니다.
+9. Butterlfy 모듈이 Damselfly 모듈로 Target Software Model을 저장하는 API를 요청합니다.
+10. 저장된 Target Software는 추후 Target에 Software Migration을 수행하는데 사용됩니다.
+
+[View Mermaid in Full Screen](https://mermaid.live/view#pako:eNqtV21v2zYQ_iuEgAJuIb8lcewIRYCt6bJiTVfU6QYMBgZaOttEJFIjKTtekP_eI_ViWZJf4sZfLFIPnzvePccTnxxfBOB4joL_EuA-3DA6lzSacIK_mErNfBZTrsl3BZJQZf_rb3-VYpUB_oYp-SC4EiE04BKtQc7CtUEWgzruVlKlFiKOU87SsI79XXBYTwEMMH-uo25opCDMLBeDCU-Rb96QsYaY9Lxso74PSoEiYzHTKyqB3DGMi2aCkzvK6RwiQNK_GKxSArOqfX2dxcEjv1gCohdwgGJZUFBfsyXVkAcznc0GhjsPl0e-mWwpfSL9dti3A9A35FoyWAJRdAkB8ifSL5tBwYQkZGh-JkVUjqX1N2dHj4tXGI-vn4hPw5BoQW4_3pNukL_rqow5MsQ4suZa1oBZkE3kKGJh6m1lUxUvimG7GjidSJ56L2bZDpstpEQB7DJR3W45-99AxYIHZMX0wibJpIFQvsOW9admr5KnXAho57s1csNUHNL1AQF84oaEok3rzEvs5zLcVsiZRz4LijuJwWcz5jcLpLkqxhCCr20gwi2ORrdOLwtxCn0l3K-i4-4TC55JSxYltdejnxP1fm4SUE0PafoINb-A_FgBK6uKXYWIjJqyhnrcoc9zj9wCB2kg91TOQTdVyOdC8VWNlkQ0z3l0yrNxrODZVM5pOj3RxG6tllrltlq__jlGuc43rwvBdgtb_9qDsXUg0VWZ1rrzF4GzYol9dMub31iIbhKRaExjDDzAD441Nmn_AQ8r5b2fyu51GzMzlVRu5k0rmHbeueRdO4Dl2wx1I_zEnG9piDZYBAnfYCPKcyx-jaCCMM5EJlyzyOAQ9QDSJbEIEOmaN7is0-nki_4AyXG_ZS948ti2-WK-8efBIsxTadlHvmRScHv0KqzLuGBIQ1MKSHMVz2yQsBi2BUBaNS2XToxSVdSScUyHOkJ7J9T1ftqjd7Sjzi-wnWD7Jo0sB0tbHVh6WjUfz_riZpOW765uk4W6ZR2oxf0Veov9UGrcGfEFnzEZ2cy-RoMxW9jLeaz-mt09gr-c8uqJZky4pJSk-wXsDc-KYQKnQBIFgT0kZkI21QQ8gp-YJ8d1IkDfWID3sidjf-LgN2QEE8fDxwBmNAn1xJnwZ4TSRIvxmvuOp2UCriNFMl_kgyTG8zq_0-WTeB36R4jy0PGenEfHO-8PO72L0fCy3z8fXJ4Nr1xn7XiDYQcn-pf93tXZaDTqDwfPrvO_Jeh1BhcIxV_vbHTVH1y4zlwatzNXzBEvPwg8dJHGdSBgWsi79MJp753PPwCJtxJm)
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Browser as Web Console
+    participant Butterfly as Butterfly
+    participant Grasshopper as Grasshopper
+    participant Honeybee as Honeybee
+    participant Damselfly as Damselfly
+
+    %% Step 0: User accesses Software Migration Management View
+    User->>Browser: Access the Software Migration Management view
+    activate Browser
+    Browser->>Butterfly: Request the Software Migration Management view
+    activate Butterfly
+    
+    %% Step 1: Retrieve saved Source Software Model list from Damselfly
+    Butterfly->>Damselfly: API call to GET /damselfly/softwaremodel/source (list all source software models)
+    activate Damselfly
+    Damselfly-->>Butterfly: Return list of saved source software models
+    deactivate Damselfly
+    
+    Butterfly-->>Browser: Respond with the view and source software model list
+    deactivate Butterfly
+    Browser-->>User: Display Software Migration Management Interface with source software model list
+    deactivate Browser
+
+    %% Step 2: Load specific Source Software Model
+    User->>Browser: Select and load specific source software model
+    activate Browser
+    Browser->>Butterfly: Request to load specific source software model
+    activate Butterfly
+    Butterfly->>Damselfly: API call to GET /damselfly/softwaremodel/source/{id} (retrieve specific source software model)
+    activate Damselfly
+    Damselfly-->>Butterfly: Return specific source software model data
+    deactivate Damselfly
+    Butterfly-->>Browser: Respond with source software model data
+    deactivate Butterfly
+    Browser-->>User: Display selected source software model details
+    deactivate Browser
+
+    %% Step 3: Generate Target Software Migration List
+    User->>Browser: Request to generate target software migration list
+    activate Browser
+    Browser->>Butterfly: Request to generate target software migration list
+    activate Butterfly
+    Butterfly->>Grasshopper: API call to POST /grasshopper/software/migration_list (with source software model data)
+    activate Grasshopper
+    Note over Grasshopper: Filter out dependency packages:<br/>- Library packages (lib.*, *-dev)<br/>- Documentation packages (*-doc, *-man)<br/>- Container runtimes (docker, podman, runc, ...)<br/>- Kernel packages (linux-generic.*, kernel.*, ...)<br/>- Environment setup packages
+    Grasshopper-->>Butterfly: Return filtered migration list (Target Software Model)
+    deactivate Grasshopper
+    Butterfly-->>Browser: Respond with target software migration list
+    deactivate Butterfly
+    Browser-->>User: Display target software migration list (Target Software Model)
+    deactivate Browser
+
+    %% Step 4: Save Target Software Model
+    User->>Browser: Request to save Target Software Model
+    activate Browser
+    Browser->>Butterfly: Request to save Target Software Model
+    activate Butterfly
+    Butterfly->>Damselfly: API call to POST /damselfly/softwaremodel/target (save target software model)
+    activate Damselfly
+    Damselfly-->>Butterfly: Return saved Target Software Model confirmation
+    deactivate Damselfly
+    Butterfly-->>Browser: Respond with save confirmation
+    deactivate Butterfly
+    Browser-->>User: Display Target Software Model save confirmation
+    deactivate Browser
+    
+    Note over User, Damselfly: The saved Target Software Model will be used<br/>for software migration execution
+```
+
+## Execute software migration
+
+: Participants: Butterfly, Cicada, Damselfly, Grasshopper, Honeybee, Beetle, Tumblebug
+
+[View Mermaid in Full Screen](https://mermaid.live/view#pako:eNqtWW1P3DgQ_itWpEpUWrq8dkt0h8QBR_nAXY-lrXRCqkwyu1gkcWo7C3uI_35-TZy33SyFDxDvjp-Z8TzzEvMcRDSGIAw4_Cwgi-CM4DnD6W2G5E-OmSARyXEm0FcODGGu_7a__YPRRyvwHe7QKc04TaBDrhAC2CxZKsly0ZY7wymHxMqVi7bcKYlwjJWQeWpLXDDM-T3Nc2Odt2zLfqYZLO8AlKB77vABQCRaxjy1JW6K9C6Bu2KuhMpFW25KCxbBtyslZp7Rt6sOOMzmIIyYedZiRvDdOzQVkKOd0IYoioBzKCWndCYeMQN0JQOdoCuc4TmkIGG_EXg0GGrj9vGxDWKITjQGEvewHmVRouBIkAUW4MhgPrULBe_CHaJrxTYuXq-hzpzyJK5BMAILQBwvIO6G5tYuByEtKwkmXf9yiSKcJEhQdHF-g8ax-27MLUyqUMbCYG8lRPlhFk4CaRH-vmF1g8flcrt5OKJgGdLAdGZd6dZggGLoU9F01Q_yNfCcZjF6JOJeB0KdM8LZYF2NILhASx1ftYIzwvMEL9cH-DJTODiCtgrHpDrXd0M0hQQi0Y3dTWq7o9M5NKMMpURWPkFotjGdpyBPjVlO6_PkWllf3NDl2caEziEiMxKt8vhtKD1-JvEL2mItzZ2u_BrHu08nxgK_HbOHqxhK6DXBjUFg0pUv3WTeK-utrPBeVqhM_KcAtkQnC4mHZROREnxlxa4jyF8FIhnKKRM4eXWRroNuUI2N9Venl6aWzRhNay3T56v5vIOsZVaOMz5-zvhl_DJOI4K2ftbQR0hmsFpcnhltOvhGRvZSnKItmiuY30n8vknamlH6eXVJlnp4pY9vVGV7MNAazq3f2j557POmffw9BRJnGljRzxyfjIRieR1tYHMvU0VBkmxGO9F-nQ7jZ_nrUtWtn23X3w-PbN1J3QzvgbD-nPbOczANZEJpfQq-F3hgLWrE2G9jtjwNrUP7oaVN1VpKpO-UPcwS-ohuIJVqBawuQy1xy4PX9FbHpqrIllY9OjWibtXAwjTIT5M2_suFT1PzeQdNI_3F2Fk4Li10BB3kTrNO-Wb8ReUHdCEnfmeEpXLFiBIn_O2OjY-3rS744ZT_cCrt91HBhfTWY5BDsAIC8wcU0VRyWfWCiGYzMi-MsD18Y013llWmbRBNj7m-_4OzbQDu5sk2BLQ7zQ5CdMpACbRpN2RwVa-ByrWmASMUGdj2ib5uni01aFyFV5tw6-Y4K1Yn4LrU-fL3tJ07aKvXMXSHuewttGeQHFVGjrSV1eBmzd0swWzcVnDXJZoM4YrB0wqd5HniDZOtiFqxU5tk4B256qQs1bqt1BSEyc4Ychk9yCICpoHBE0SFtpKyGJiVv4AMVC2o1J6dXKzPYBMKz1g5bikltUqwMm83ydiSeRreOvzq7G3ZbntvPZ_cq9n6TD4M0bk-2-Gp7OTVaOTMefN8rQJeS9iWh2-apeNn96QmMlZkaAs8Z9tObpZ67uCaiTaVOSE6XLdf3zAyn0uYet_i6qXIXXhaySuaEUFZO4cao4O9cBQGuHafqPeqWzNGi_l9h1G19Do-9rZWDnYUFwO7tSC49_Bat5qlvedcyIZF-D2aTj-rPMrMHGb98jZKi9ydZyjLg6pc-kay2qPLTkNz_Zq0ClwFdQYRW-bCx5HUl6crCE7MYFFwks3R9fQE5czAPoAlo8PZbh6YLUixQYe4204vi-uWdrlf3tQa_6tyu_oIGhe85bLPZK9zmnG509wGape97vo47I1yw1K3odN5e8ncD-aMqEy0W5qUs1SuGKxeS6Rn9xW7cxw94DmoRFxxoZVQmqM_X7m5zsdaIL7msW7kAouCq5J2G5BMrpJE8vA20Jz8wqgOTqlVvwh0NvVKX9-RXst6eJJxokZH1YvuKH3Qp1K5otV7DU5TyQL0McnfJYs9LxJRbe6zqmLNKc2X9c6NZiSxY0N1Q6Z-3KY-SyKaE5mDevv647hhOOMzGZUO5Zs4cP4kmGSjrOVsQUypak4hQ4x32zkIIQkwwIFqJtNjpW5CFoUPD1-pV_Owy_Hh_J2RTGYsxLeBuhmSaznZqJXBkt3MT1KvzNRLgl9_OpLbPw5vOLDu1DuW5SN3J1R66Olota1243d9ud1Nw7LHyxyqOnwCXv-3B1VuNnY0R2B_YFJ3pfb7z9Jy9RatkNVxynAbb8zV-ID33Y6RzMbMwOgDerNpuank1YPyarNzRufS9N4X3mAUzBmJg1CwAkZBCnJuV8vgWe24DeQ4mMJtEMrHGGZY1SzJ0he5LcfZv5Smbqceo9yi0JG0_512H-JC0Okyi9xaAgThc_AUhPt7kw-TTwf7k6OdyWSyv7s3CpZBuH14uPvh6PDwYLK_I7-bHLyMgv-0xt0Pe58mR3uHu3uTj58Odyc7R1K_mgHZKS0yEYQfJxICYsXFK_Mfc_2P85f_AUzN2JE)
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Browser as Web Console
+    participant Butterfly as Butterfly
+    participant Damselfly as Damselfly
+    participant Cicada as Cicada
+    participant Grasshopper as Grasshopper
+    participant Honeybee as Honeybee
+    participant Beetle as Beetle
+    participant Tumblebug as Tumblebug
+    participant SourceVM as Source VM
+    participant TargetVM as Target VM
+
+    %% Step 0: User accesses Target Software Model Management View
+    User->>Browser: Access the Target Software Model Management view
+    activate Browser
+    Browser->>Butterfly: Request the Target Software Model Management view
+    activate Butterfly
+    
+    %% Retrieve saved Target Software Models
+    Butterfly->>Damselfly: API call to GET /damselfly/softwaremodel/target (list target software models)
+    activate Damselfly
+    Damselfly-->>Butterfly: Return list of saved target software models
+    deactivate Damselfly
+    
+    Butterfly-->>Browser: Respond with the view and target software models
+    deactivate Butterfly
+    Browser-->>User: Display Target Software Model Management Interface
+    deactivate Browser
+
+    %% Step 1: Select Target Software Model
+    User->>Browser: Select target software model for migration
+    activate Browser
+    Browser->>Butterfly: Send request with selected target software model ID
+    activate Butterfly
+    
+    %% Retrieve specific Target Software Model
+    Butterfly->>Damselfly: API call to GET /damselfly/softwaremodel/target/{id} (retrieve specific target software model)
+    activate Damselfly
+    Damselfly-->>Butterfly: Return target software model data
+    deactivate Damselfly
+    
+    Butterfly-->>Browser: Respond with target software model data
+    deactivate Butterfly
+    Browser-->>User: Display selected target software model details
+    deactivate Browser
+
+    %% Step 2: Access VM Management and Query Available VMs
+    User->>Browser: Access VM Management menu in portal
+    activate Browser
+    Browser->>Butterfly: Request VM Management view
+    activate Butterfly
+    
+    %% Query MCI list from Beetle
+    Butterfly->>Beetle: API call to GET /migration/ns/{nsId}/mci (query MCI list, or MCI ID list with query param (option=id))
+    activate Beetle
+    Beetle-->>Butterfly: Return list of MCIs or MCI IDs
+    Butterfly-->>Browser: Respond with the list of MCIs or MCI IDs 
+    Browser-->>User: Display the list of MCIs or MCI IDs 
+       
+    %% Query available VMs from Beetle
+    User->>Browser: Select an MCI and query to get available VMs 
+    Browser->>Butterfly: Request the selected MCI info to get available VMs
+    Butterfly->>Beetle: API call to GET /migration/ns/{nsId}/mci/{mciId} (query available VMs)
+    Beetle-->>Butterfly: Return list of available VMs and their details
+    deactivate Beetle
+    
+    Butterfly-->>Browser: Respond with VM list and details
+    deactivate Butterfly
+    Browser-->>User: Display available VMs for migration target
+    deactivate Browser
+
+    %% Step 3: Query Software Migration Workflow Templates
+    User->>Browser: Access Workflow Template selection
+    activate Browser
+    Browser->>Butterfly: Request software migration workflow templates
+    activate Butterfly
+    
+    %% Query Software Migration Workflow Templates from Cicada
+    Butterfly->>Cicada: API call to GET /cicada/workflow/templates (query software migration workflow templates)
+    activate Cicada
+    Note over Cicada: Return available templates:<br/>- migrate_software_workflow<br/>- custom migration templates<br/>- task component configurations
+    Cicada-->>Butterfly: Return available software migration workflow templates
+    deactivate Cicada
+    
+    Butterfly-->>Browser: Respond with workflow templates
+    deactivate Butterfly
+    Browser-->>User: Display available workflow templates
+    deactivate Browser
+
+    %% Step 4: Create Migration Workflow
+    User->>Browser: Select target VM and workflow template, create migration workflow
+    activate Browser
+    Browser->>Butterfly: Send workflow creation request with target VM and template
+    activate Butterfly
+    Butterfly->>Cicada: API call to POST /cicada/workflow (create migration workflow based on target software model, target VM, and selected template)
+    activate Cicada
+    Note over Cicada: Create software migration workflow:<br/>- Use target software model data<br/>- Apply selected workflow template<br/>- Configure target VM information<br/>- Set task dependencies and execution order<br/>- Generate workflow DAG
+    Cicada-->>Butterfly: Return created workflow ID and configuration
+    deactivate Cicada
+    Butterfly-->>Browser: Respond with workflow creation confirmation
+    deactivate Butterfly
+    Browser-->>User: Display created workflow details and workflow ID
+    deactivate Browser
+
+    %% Step 5: Execute Migration Workflow
+    User->>Browser: Execute the created migration workflow
+    activate Browser
+    Browser->>Butterfly: Send workflow execution request with workflow ID
+    activate Butterfly
+    Butterfly->>Cicada: API call to POST /cicada/workflow/{workflowId}/run (execute the migration workflow)
+    activate Cicada
+    Note over Cicada: Execute workflow:<br/>- Start workflow execution<br/>- Trigger task components in sequence<br/>- Monitor task dependencies
+    
+    %% Cicada triggers Grasshopper tasks through workflow execution
+    Cicada->>Grasshopper: Execute software migration tasks (via workflow)
+    activate Grasshopper
+    
+    %% Establish SSH connections
+    Grasshopper->>Honeybee: Get source connection info
+    activate Honeybee
+    Note over Honeybee: Decrypt connection credentials<br/>using RSA private key
+    Honeybee-->>Grasshopper: Return decrypted connection info
+    deactivate Honeybee
+    
+    Grasshopper->>Tumblebug: Get target VM connection info
+    activate Tumblebug
+    Tumblebug-->>Grasshopper: Return target VM access info
+    deactivate Tumblebug
+    
+    Grasshopper->>SourceVM: Establish SSH connection
+    activate SourceVM
+    Grasshopper->>TargetVM: Establish SSH connection  
+    activate TargetVM
+    
+    %% Execute migration for each software package in Target Software Model
+    loop For each software package in Target Software Model
+        Note over Grasshopper: Update status to "installing"<br/>Process software from target software model
+        Grasshopper->>TargetVM: Run Ansible playbook for package installation
+        TargetVM-->>Grasshopper: Return installation result
+        
+        Grasshopper->>SourceVM: Copy configuration files and data
+        SourceVM-->>Grasshopper: Return copied files
+        Grasshopper->>TargetVM: Transfer configuration files
+        
+        Grasshopper->>SourceVM: Extract service configuration
+        SourceVM-->>Grasshopper: Return service settings
+        Grasshopper->>TargetVM: Configure and start services
+        TargetVM-->>Grasshopper: Return service status
+        
+        Note over Grasshopper: Update status to "finished" or "failed"
+    end
+    
+    deactivate SourceVM
+    deactivate TargetVM
+    
+    Grasshopper-->>Cicada: Return migration task results and status
+    deactivate Grasshopper
+    Note over Cicada: Monitor workflow execution:<br/>- Track task completion<br/>- Update workflow status<br/>- Generate execution report<br/>- Handle task failures and retries
+    Cicada-->>Butterfly: Return workflow execution status and results
+    deactivate Cicada
+    Butterfly-->>Browser: Respond with workflow execution status
+    deactivate Butterfly
+    Browser-->>User: Display workflow execution status and progress
+    deactivate Browser
+```
+
+## Monitor software migration progress and logs
+
+: Participants: Butterfly, Grasshopper
+
+[View Mermaid in Full Screen](https://mermaid.live/view#pako:eNqlVmtr2zAU_StCUNjAeThtmtSMwJaWUlhHadcNRr6o1o0j6kieJKfNQv77rm3ZcRYnzTZ_sSWde3Qf58pa0VBxoAE18DMFGcKlYJFm84kk-CRMWxGKhElLHg1owkz-3l39pNWLA3yHJzJW0qgYGnCptaCn8TJDVoNd3LVmxsxUkhScteFEFuiTE_JgISHdwLkWhmAMGHIrMAArlCS3SgqrtJAR-SbgpbDLwK3RyDkckI-5HbEzaLZcVJYstGLBLJTBFrNukFGW4QTkPsumsX_Hup2Natiqe3sPJlGSkxdhZzn7hojDXirnIhI95iyXwiQxWza7diMzWxbCLm0Z93YF_KA0rxHeaRVpTGxz0kv8vMInW_jmVMdKJZVpaUBQE0JxEbK4jPfNsmy2NZbZ1GzM9qVwuyKjUU2QKKG7G5JtT6wi11dfSSfarHaMmtoXpqFTbAqdYsvOCl4hTDMnbvi6wYEtyZerXxSuqAXKfcuB8QzCZ1IRuqiCD0-6M2oRDYwvPSIkTscxltgjUyGFmQHHLyZi4A55V8tpCNKyCNzKONUaJ7BHw2ecJU-QSQVrkDcd33hY86v1Z_JtqmXmTdyyYg4HqlDTXGMajuiNfco63CmN3fKY8Ay6y0h40UeFLUh-bMf0gvxAqrXLZxXtaZUcyMHmdao5EVcW_3AuHabZdxD9l-xxoybN7y_0Hq2jjLSABeSelxJ32m7jHHnnBkV8RebMewesAi-goZJTEaUuFwzFgylbiLBgL42utM7OKqw4St8UMIuNQKzGY9Kl703hN-X8kNCPEHkli0bGY_8CW_nKgnvDU0dEPToHPWeC4_VhlaEmFP9Ic5jQAD85TFka2wmdyDVCWWrVw1KGNLA6BY9qlUazcpDmHeauHuUk3gN-KFUf0mBFX2lw6g_a3bPh4Nz3T_vnvcGFR5c06A_aOOGf-92L3nA49Af9tUd_5QTddv8Mofh0e8MLv3_m0UhnbjtXsHNBj1UqLdJ4FHj2g7kt7kX59Wj9G4U8Ktk)
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Browser as Web Console
+    participant Butterfly as Butterfly
+    participant Grasshopper as Grasshopper
+
+    %% Step 0: User accesses Migration Monitoring View
+    User->>Browser: Access the Migration Monitoring view
+    activate Browser
+    Browser->>Butterfly: Request the Migration Monitoring view
+    activate Butterfly
+    Butterfly-->>Browser: Respond with the view
+    deactivate Butterfly
+    Browser-->>User: Display Migration Monitoring Interface
+    deactivate Browser
+
+    %% Step 1: Monitor Migration Progress
+    User->>Browser: Monitor migration progress
+    activate Browser
+    loop Monitor progress periodically
+        Browser->>Butterfly: Request migration status
+        activate Butterfly
+        Butterfly->>Grasshopper: API call to GET /grasshopper/software/migrate/status/{executionId}
+        activate Grasshopper
+        Note over Grasshopper: Check execution status:<br/>- ready, installing, finished, failed<br/>- Progress percentage<br/>- Current package being processed
+        Grasshopper-->>Butterfly: Return real-time migration status
+        deactivate Grasshopper
+        Butterfly-->>Browser: Respond with migration progress
+        deactivate Butterfly
+        Browser-->>User: Update migration progress display
+    end
+    deactivate Browser
+
+    %% Step 2: View Migration Logs
+    User->>Browser: View detailed migration logs
+    activate Browser
+    Browser->>Butterfly: Request migration logs
+    activate Butterfly
+    Butterfly->>Grasshopper: API call to GET /grasshopper/software/migrate/log/{executionId}
+    activate Grasshopper
+    Note over Grasshopper: Retrieve logs:<br/>- install.log (installation details)<br/>- migration.log (configuration and service logs)<br/>- Error messages and stack traces
+    Grasshopper-->>Butterfly: Return migration logs
+    deactivate Grasshopper
+    Butterfly-->>Browser: Respond with detailed logs
+    deactivate Butterfly
+    Browser-->>User: Display installation and migration logs
+    deactivate Browser
+```
