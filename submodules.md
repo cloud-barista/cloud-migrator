@@ -6,5 +6,6 @@ https://github.com/cloud-barista/cm-damselfly
 https://github.com/cloud-barista/cm-grasshopper
 https://github.com/cloud-barista/cm-beetle
 https://github.com/cloud-barista/cm-honeybee
+https://github.com/cloud-barista/cm-model
 https://github.com/cloud-barista/cb-tumblebug
 https://github.com/cloud-barista/cb-spider
