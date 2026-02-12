@@ -28,3 +28,6 @@
 [submodule "cm-ant"]
 	path = cm-ant
 	url = https://github.com/cloud-barista/cm-ant
+[submodule "cm-model"]
+	path = cm-model
+	url = https://github.com/cloud-barista/cm-model
